@@ -4,3 +4,4 @@ test_api.py
 test_chart.png
 __pycache__/
 .DS_Store
+app-main.js

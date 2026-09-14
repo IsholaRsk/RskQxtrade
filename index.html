@@ -321,6 +321,59 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
 .g-table tr:last-child td{border-bottom:none}
 .g-table b{color:var(--txt)}
 .g-table a{color:var(--cyan);text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.4)}
+
+/* ---------- Multi-captures ---------- */
+.thumbs{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.thumb{position:relative;width:104px}
+.thumb img{width:104px;height:66px;object-fit:cover;border-radius:10px;border:1px solid var(--stroke);display:block}
+.thumb .t-label{display:block;font-size:9.5px;color:var(--muted);margin-top:5px;line-height:1.35;text-align:center}
+.thumb .t-x{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:8px;background:rgba(3,5,9,.9);border:1px solid var(--stroke);color:var(--txt);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.thumb .t-x:hover{color:var(--red);border-color:var(--red)}
+.thumb.add{width:104px;height:66px;border:1.5px dashed rgba(255,255,255,.16);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);cursor:pointer;font-size:10px;background:transparent;font-family:inherit}
+.thumb.add:hover{border-color:var(--cyan);color:var(--cyan)}
+.tf-hint{margin-top:12px;font-size:11px;color:var(--muted);line-height:1.55;background:rgba(34,211,238,.05);border:1px dashed rgba(34,211,238,.25);padding:9px 12px;border-radius:10px}
+.tf-hint b{color:var(--cyan)}
+
+/* ---------- Bannière news ---------- */
+.news-banner{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.55;padding:11px 13px;border-radius:12px;margin-bottom:14px;border:1px solid}
+.news-banner .ic{margin-top:1px;flex:none}
+.news-banner b{color:#fff}
+.news-banner.blocked{background:rgba(251,113,133,.09);border-color:rgba(251,113,133,.5);color:#fecdd3;animation:pulse-red 2s ease-in-out infinite}
+.news-banner.blocked .ic{color:var(--red)}
+.news-banner.watch{background:rgba(251,191,36,.06);border-color:rgba(251,191,36,.4);color:#fde68a}
+.news-banner.watch .ic{color:var(--amber)}
+.news-banner.clear-b{background:rgba(52,211,153,.05);border-color:rgba(52,211,153,.3);color:#a7f3d0}
+.news-banner.clear-b .ic{color:var(--green)}
+.news-banner.otc{background:rgba(59,130,246,.07);border-color:rgba(59,130,246,.35);color:#bfdbfe}
+.news-banner.otc .ic{color:#7eabf7}
+.nb-sub{opacity:.75;font-size:11px}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 rgba(251,113,133,0)}50%{box-shadow:0 0 22px rgba(251,113,133,.18)}}
+
+/* ---------- Tracker WIN/LOSS ---------- */
+.track-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.track-btn{padding:12px;border-radius:12px;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;background:rgba(255,255,255,.035);border:1px solid var(--stroke);color:var(--muted);font-family:inherit}
+.track-btn.win:hover{border-color:rgba(52,211,153,.6);color:var(--green)}
+.track-btn.loss:hover{border-color:rgba(251,113,133,.6);color:var(--red)}
+.track-btn.win.on{background:rgba(52,211,153,.14);border-color:var(--green);color:var(--green);box-shadow:0 0 18px rgba(52,211,153,.15)}
+.track-btn.loss.on{background:rgba(251,113,133,.12);border-color:var(--red);color:var(--red);box-shadow:0 0 18px rgba(251,113,133,.13)}
+
+/* ---------- Stats (journal) ---------- */
+.stats-wrap{margin-bottom:16px}
+.stats-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.stat-chip{font-size:12px;padding:7px 12px;border-radius:99px;border:1px solid var(--stroke);background:var(--glass2);color:var(--muted)}
+.stat-chip b{color:var(--txt)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:10px}
+.stat-card{background:var(--glass2);border:1px solid var(--stroke);border-radius:15px;padding:13px 14px}
+.stat-card h3{font-size:10.5px;font-weight:800;letter-spacing:.13em;color:var(--muted);text-transform:uppercase;margin-bottom:11px}
+.s-row{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:8px;color:var(--muted)}
+.s-row:last-child{margin-bottom:2px}
+.s-row .s-lab{width:66px;flex:none;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-row .s-bar{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.s-row .s-bar i{display:block;height:100%;border-radius:99px}
+.s-row .s-val{width:42px;text-align:right;font-variant-numeric:tabular-nums;flex:none}
+.r-dot{width:23px;height:23px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex:none}
+.r-dot.WIN{background:rgba(52,211,153,.15);color:var(--green)}
+.r-dot.LOSS{background:rgba(251,113,133,.14);color:var(--red)}
 </style>
 </head>
 <body>
@@ -336,6 +389,7 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
   <symbol id="i-ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></symbol>
   <symbol id="i-droplet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></symbol>
   <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
   <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
   <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
   <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></symbol>
@@ -384,15 +438,14 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
       <div>
         <div class="card">
           <h2><svg class="ic"><use href="#i-image"/></svg> Capture du graphique</h2>
+          <div id="newsBanner" class="news-banner hidden"></div>
           <div id="dropzone">
             <svg class="ic xl"><use href="#i-image"/></svg>
             <p><b>Clique</b> pour choisir une image, glisse ta capture ici,<br>ou colle-la avec <kbd>Ctrl</kbd> + <kbd>V</kbd></p>
           </div>
-          <input type="file" id="fileInput" accept="image/*" class="hidden">
-          <div id="previewWrap" class="hidden">
-            <img id="previewImg" alt="Aperçu du graphique">
-            <button id="clearImg" title="Retirer l'image"><svg class="ic s"><use href="#i-x"/></svg></button>
-          </div>
+          <input type="file" id="fileInput" accept="image/*" class="hidden" multiple>
+          <div id="thumbsRow" class="thumbs hidden"></div>
+          <div id="tfHint" class="tf-hint hidden">1ʳᵉ image = timeframe d'<b>exécution</b> (M1/M5 : zone & signal) · 2ᵉ = <b>contexte supérieur</b> (M15/H1 : flux & liquidité) → confluence multi-timeframes, étoiles renforcées</div>
           <button id="analyzeBtn" disabled><svg class="ic"><use href="#i-zap"/></svg> Analyser le graphique</button>
 
           <div class="howto">
@@ -493,12 +546,22 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
             <ul id="resRaisons"></ul>
           </div>
 
+          <div id="newsWarn" class="warn news hidden" style="border-color:rgba(251,113,133,.45);background:rgba(251,113,133,.07)">
+            <svg class="ic" style="color:var(--red)"><use href="#i-alert"/></svg>
+            <span id="newsWarnTxt"></span>
+          </div>
+
           <div class="warn">
             <svg class="ic"><use href="#i-alert"/></svg>
             <span><b>Aide à la décision, pas un conseil financier.</b> Aucune probabilité n'est une garantie — le trading comporte un risque élevé de perte en capital. N'engage jamais de l'argent que tu ne peux pas perdre.</span>
           </div>
 
           <button id="copyAll"><svg class="ic s"><use href="#i-file"/></svg> Copier tout le rapport</button>
+
+          <div class="track-row">
+            <button class="track-btn win" id="btnWin"><svg class="ic s"><use href="#i-check"/></svg> WIN</button>
+            <button class="track-btn loss" id="btnLoss"><svg class="ic s"><use href="#i-x"/></svg> LOSS</button>
+          </div>
         </div>
       </div>
     </div>
@@ -510,6 +573,7 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
       <h2><svg class="ic"><use href="#i-clock"/></svg> Historique</h2>
       <button class="btn small" id="clearHist"><svg class="ic s"><use href="#i-trash"/></svg> Effacer</button>
     </div>
+    <div class="stats-wrap" id="statsWrap"></div>
     <div id="histList"></div>
     <div class="card" id="histEmpty">
       <div class="empty-state">
@@ -645,6 +709,7 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
 <script>
 /* =====================================================================
    Ghost rskIA — analyse de captures de graphiques (Pocket Option / MT5)
+   Méthode Kasper SMC · Multi-captures · Filtre news · Tracker WIN/LOSS
    ===================================================================== */
 
 const PROVIDERS = {
@@ -672,15 +737,25 @@ const PROVIDERS = {
 
 const $ = id => document.getElementById(id);
 const icon = (name, cls) => '<svg class="ic ' + (cls || '') + '"><use href="#i-' + name + '"/></svg>';
+const clamp = n => { n = Number(n); if(isNaN(n)) return null; return Math.max(0, Math.min(100, Math.round(n))); };
+const confianceLabel = v => { if(v == null) return '—'; if(v >= 75) return 'Élevée'; if(v >= 50) return 'Moyenne'; return 'Faible'; };
 
 let settings = loadSettings();
-let state = { b64: null, dataUrl: null, lastResult: null };
+let state = {
+  images: [],            // [{ b64, dataUrl }] — max 3, ordre = timeframes croissants
+  lastResult: null,
+  selectedTs: null,      // entrée d'historique affichée (pour marquage WIN/LOSS)
+  news: { loaded: false, events: [], ts: 0, unavailable: false }
+};
 
-/* ---------------- Navigation (barre basse) ---------------- */
+const MAX_IMGS = 3;
+const TF_LABELS = ['Exécution (M1/M5)', 'Contexte (M15/H1)', 'Bonus (HTF)'];
+const NEWS_REL = '/api/news';
+const NEWS_ABS = 'https://ghost-rskia.vercel.app/api/news';
+
+/* ---------------- Navigation ---------------- */
 function switchView(name){
-  ['analyser','historique','guide','reglages'].forEach(v=>{
-    $('view-' + v).classList.toggle('active', v === name);
-  });
+  ['analyser','historique','guide','reglages'].forEach(v=> $('view-' + v).classList.toggle('active', v === name));
   document.querySelectorAll('.nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.view === name));
   if(name === 'reglages'){ renderProviderPills(); fillSettingsForm(); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -690,15 +765,13 @@ $('statusPill').onclick = ()=> switchView('reglages');
 
 /* ---------------- Settings ---------------- */
 function loadSettings(){
-  // La clé seed (fichier key.local.js, non versionné) n'est utilisée que si le
-  // navigateur n'a pas déjà des réglages sauvegardés — la clé ne quitte jamais l'appareil.
   const def = {
     provider:'gemini',
     keys: (typeof window !== 'undefined' && window.GHOST_SEED_KEY) ? { gemini: window.GHOST_SEED_KEY } : {},
     models:{}, endpoint:'', profil:'equilibre'
   };
   try {
-    const saved = JSON.parse(localStorage.getItem('tl_settings')||'{}');
+    const saved = JSON.parse(localStorage.getItem('tl_settings') || '{}');
     return Object.assign(def, saved, {
       keys:   Object.assign({}, def.keys,   saved.keys   || {}),
       models: Object.assign({}, def.models, saved.models || {})
@@ -708,7 +781,7 @@ function loadSettings(){
 function saveSettingsToLS(){ localStorage.setItem('tl_settings', JSON.stringify(settings)); }
 
 function updateKeyStatus(){
-  const key = (settings.keys[settings.provider]||'').trim();
+  const key = (settings.keys[settings.provider] || '').trim();
   const ok = key.length > 8 || settings.provider === 'custom';
   $('keyDot').classList.toggle('ok', ok);
   $('keyLabel').textContent = ok ? PROVIDERS[settings.provider].name + ' connecté' : 'Aucune clé API';
@@ -716,7 +789,7 @@ function updateKeyStatus(){
 
 function renderProviderPills(){
   const wrap = $('providerPills'); wrap.innerHTML = '';
-  Object.entries(PROVIDERS).forEach(([id,p])=>{
+  Object.entries(PROVIDERS).forEach(([id, p])=>{
     const el = document.createElement('div');
     el.className = 'pill' + (settings.provider === id ? ' sel' : '');
     el.innerHTML = p.name + (p.free ? '<span class="tag">GRATUIT</span>' : '');
@@ -761,35 +834,61 @@ function toast(msg, ic, isErr){
   toastTimer = setTimeout(()=> t.classList.remove('show'), isErr ? 5200 : 2600);
 }
 
-/* ---------------- Image : upload / drop / paste ---------------- */
+/* ---------------- Multi-captures ---------------- */
 const dz = $('dropzone');
 dz.onclick = ()=> $('fileInput').click();
-$('fileInput').onchange = e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ''; };
+$('fileInput').onchange = e=>{ handleFiles(Array.from(e.target.files)); e.target.value = ''; };
 ['dragover','dragenter'].forEach(ev=> dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.add('over'); }));
 ['dragleave','drop'].forEach(ev=> dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.remove('over'); }));
-dz.addEventListener('drop', e=>{ const f = e.dataTransfer.files[0]; if(f) handleFile(f); });
+dz.addEventListener('drop', e=> handleFiles(Array.from(e.dataTransfer.files)));
 document.addEventListener('paste', e=>{
+  const files = [];
   const items = e.clipboardData && e.clipboardData.items;
-  if(!items) return;
-  for(const it of items){ if(it.type.indexOf('image') === 0){ handleFile(it.getAsFile()); break; } }
+  if(items) for(const it of items){ if(it.type.indexOf('image') === 0){ const f = it.getAsFile(); if(f) files.push(f); } }
+  if(files.length) handleFiles(files);
 });
-$('clearImg').onclick = e=>{ e.stopPropagation(); clearImage(); };
 
-function handleFile(file){
-  if(!file.type.startsWith('image/')){ toast('Ce fichier n\'est pas une image', 'alert', true); return; }
-  downscale(file).then(r=>{
-    state.b64 = r.b64; state.dataUrl = r.dataUrl;
-    $('previewImg').src = r.dataUrl;
-    $('previewWrap').classList.remove('hidden');
-    $('analyzeBtn').disabled = false;
-    dz.style.display = 'none';
-  }).catch(()=> toast('Impossible de lire cette image', 'alert', true));
+function handleFiles(files){
+  let added = 0;
+  const chain = files.filter(f => f && f.type && f.type.startsWith('image/')).reduce(
+    (p, f) => p.then(()=> tryAddImage(f)), Promise.resolve()
+  );
+  chain.then(()=>{ if(added) renderThumbs(); });
+  function tryAddImage(file){
+    if(state.images.length >= MAX_IMGS){ toast('Maximum 3 captures — retire-en une d\'abord', 'alert', true); return Promise.resolve(0); }
+    return downscale(file).then(r=>{
+      state.images.push({ b64: r.b64, dataUrl: r.dataUrl });
+      added++;
+      fetchNews(); // vérifie le calendrier à chaque upload
+    }).catch(()=> toast('Impossible de lire une image', 'alert', true));
+  }
 }
-function clearImage(){
-  state.b64 = null; state.dataUrl = null;
-  $('previewWrap').classList.add('hidden');
-  $('analyzeBtn').disabled = true;
-  dz.style.display = '';
+function removeImage(i){
+  state.images.splice(i, 1);
+  renderThumbs();
+}
+function renderThumbs(){
+  const row = $('thumbsRow');
+  row.classList.toggle('hidden', state.images.length === 0);
+  $('tfHint').classList.toggle('hidden', state.images.length === 0);
+  row.innerHTML = '';
+  state.images.forEach((im, i)=>{
+    const d = document.createElement('div');
+    d.className = 'thumb';
+    d.innerHTML = '<img src="' + im.dataUrl + '" alt="capture">' +
+      '<button class="t-x" title="Retirer">' + icon('x','s') + '</button>' +
+      '<span class="t-label">' + TF_LABELS[i] + '</span>';
+    d.querySelector('.t-x').onclick = ev => { ev.stopPropagation(); removeImage(i); };
+    row.appendChild(d);
+  });
+  if(state.images.length < MAX_IMGS){
+    const add = document.createElement('button');
+    add.className = 'thumb add';
+    add.innerHTML = icon('plus') + '<span>capture ' + (state.images.length + 1) + '</span>';
+    add.onclick = ()=> $('fileInput').click();
+    row.appendChild(add);
+  }
+  $('analyzeBtn').disabled = state.images.length === 0;
 }
 function downscale(file){
   return new Promise((resolve, reject)=>{
@@ -813,65 +912,130 @@ function downscale(file){
   });
 }
 
-/* ---------------- Prompt ---------------- */
+/* ---------------- Filtre News (calendrier éco réel) ---------------- */
+const CURS = ['USD','EUR','GBP','JPY','AUD','NZD','CAD','CHF','XAU','XAG','BTC','ETH'];
+function assetCurrencies(a){
+  const s = String(a || '').toUpperCase();
+  if(/SPX|NAS|NQ|US30|DJ|DOW|S&P|US500|USTEC|US100/.test(s)) return ['USD'];
+  if(/DAX|CAC|EU50|STOXX|FTSE/.test(s)) return ['EUR'];
+  if(/XAU|GOLD/.test(s)) return ['USD','XAU'];
+  const found = CURS.filter(c => s.includes(c));
+  return found.length ? found : ['USD'];
+}
+const isWeekendUTC = ()=>{ const d = new Date().getUTCDay(); return d === 0 || d === 6; };
+const fmtRelMin = ts => { const m = Math.round((ts * 1000 - Date.now()) / 60000); return m >= 0 ? 'dans ' + m + ' min' : 'il y a ' + Math.abs(m) + ' min'; };
+const highWindow = (backMs, fwdMs, onlyHigh = true)=>{
+  const now = Date.now();
+  return state.news.events.filter(e => (!onlyHigh || e.high) && e.ts * 1000 >= now - backMs && e.ts * 1000 <= now + fwdMs);
+};
+
+async function fetchNews(force){
+  if(!force && state.news.loaded && Date.now() - state.news.ts < 15 * 60 * 1000) return;
+  const get = async u => { const r = await fetch(u, { cache: 'no-store' }); if(!r.ok) throw new Error('http'); return r.json(); };
+  try{
+    let data;
+    try{ data = await get(NEWS_REL); } catch(e){ data = await get(NEWS_ABS); }
+    if(data && data.error){ state.news.unavailable = true; state.news.events = []; }
+    else { state.news.events = Array.isArray(data) ? data : []; state.news.unavailable = false; }
+  }catch(e){ state.news.unavailable = true; }
+  state.news.loaded = true; state.news.ts = Date.now();
+  renderNewsBanner();
+}
+function renderNewsBanner(){
+  const el = $('newsBanner');
+  el.className = 'news-banner hidden'; el.innerHTML = '';
+  if(!state.news.loaded || state.news.unavailable) return;
+  if(isWeekendUTC()){
+    el.className = 'news-banner otc';
+    el.innerHTML = icon('info','s') + '<span>Week-end — symbole probablement <b>OTC</b> : les annonces éco ne s\'appliquent pas. 🔥</span>';
+  } else {
+    const red = highWindow(20 * 60 * 1000, 60 * 60 * 1000);
+    const watch = highWindow(60 * 60 * 1000, 120 * 60 * 1000);
+    if(red.length){
+      const t = [...new Set(red.map(e => e.cur + ' — ' + e.title + ' (' + fmtRelMin(e.ts) + ')'))].slice(0, 2).join('<br>');
+      el.className = 'news-banner blocked';
+      el.innerHTML = icon('alert','s') + '<span><b>NEWS MAJEURE — NE PAS TRADER</b><br>' + t + '<br><span class="nb-sub">Règle Kasper : 15 min avant et après une annonce, on reste dehors.</span></span>';
+    } else if(watch.length){
+      const t = [...new Set(watch.map(e => e.cur + ' — ' + e.title + ' (' + fmtRelMin(e.ts) + ')'))].slice(0, 2).join(' · ');
+      el.className = 'news-banner watch';
+      el.innerHTML = icon('clock','s') + '<span><b>News haute importance à venir</b> : ' + t + '. Prudence : volatilité et spreads anormaux possibles.</span>';
+    } else {
+      el.className = 'news-banner clear-b';
+      el.innerHTML = icon('check','s') + '<span>Aucune annonce majeure dans les 2 prochaines heures — ciel dégagé.</span>';
+    }
+  }
+  el.classList.remove('hidden');
+}
+function assetNewsAlerts(d){
+  if(state.news.unavailable || isWeekendUTC()) return [];
+  const curs = assetCurrencies(d && d.actif);
+  return highWindow(20 * 60 * 1000, 30 * 60 * 1000).filter(e => curs.includes(e.cur) || e.cur === 'USD');
+}
+
+/* ---------------- Prompt (Kasper SMC) ---------------- */
 function buildPrompt(){
   const profils = {
     prudent:  'Prudent : n\'accepte que les setups 4-5 étoiles parfaitement nettes, R:R minimum 1:2. Au moindre doute, réponds ATTENDRE.',
     equilibre:'Équilibré : accepte les setups 3 étoiles et plus, R:R minimum 1:1.5.',
-    agressif: 'Agressif : accepte les setups 3 étoiles un peu plus tôt (signal en formation), mais ne viole jamais les critères éliminatoires (imbalance, flux, liquidité).'
+    agressif: 'Agressif : accepte les setups 3 étoiles un peu plus tôt (signal en formation), mais ne viole jamais les critères éliminatoires (imbalance, flux, liquidité, news).'
   };
-  return [
-    'Tu es Kasper : trader professionnel, spécialisé sur l\'Or (XAU/USD), les indices US (SPX500, Nasdaq) et les paires majeures du forex. Style Smart Money Concepts (SMC), scalpings sur M1/M5. On te montre une capture de TON graphique : analyse-la avec ton expérience, ta rigueur, et ton intuition de sniper. Un seul tir, la meilleure cible.',
+  const multi = state.images.length > 1;
+  const L = [
+    'Tu es Kasper : trader professionnel, spécialisé sur l\'Or (XAU/USD), les indices US (SPX500, Nasdaq) et les paires majeures du forex. Style Smart Money Concepts (SMC), scalpings sur M1/M5. On te montre ' + (multi ? 'PLUSIEURS captures de TON' : 'une capture de TON') + ' écran : analyse ' + (multi ? 'les images EN ENSEMBLE' : 'la') + ' avec ton expérience, ta rigueur, et ton instinct de sniper. Un seul tir, la meilleure cible.',
+    '',
+    multi
+      ? '═══ CONFLUENCE MULTI-TIMEFRAMES ═══ Image 1 = timeframe d\'EXÉCUTION (M1/M5 : la ZONE et le SIGNAL se lisent ici). Image 2 = CONTEXTE SUPÉRIEUR (M15/H1 : le FLUX et la LIQUIDITÉ majeure se lisent ICI en priorité)' + (state.images.length > 2 ? ' ; Image 3 = contexte additionnel' : '') + '. Règle absolue : le flux du contexte supérieur doit être ALIGNÉ avec le sens du trade sur l\'image d\'exécution — contexte opposé = ATTENDRE, contexte neutre = baisse d\'une étoile et de la probabilité.'
+      : '═══ TIMEFRAME UNIQUE ═══ Déduis le contexte supérieur de la structure visible sur ce seul graphique, et reste exigeant sur la clarté.',
     '',
     '═══ TON ANALYSE EN 5 ÉTAPES — DANS CET ORDRE EXACT ═══',
     '',
-    'ÉTAPE 1 · FLUX (structure) — Détermine la structure Dow : plus hauts et plus bas ascendants (HH/HL) = flux HAUSSIER ; descendants (LH/LL) = flux BAISSIER. Un CHoCH récent (cassure du dernier sommet/creux avec force) signale un retournement possible. Si une moyenne mobile 200 est visible : prix au-dessus = biais haussier, en dessous = biais baissier ; la MM200 sert souvent de support/résistance dynamique. RSI visible : au-dessus de 50 = momentum acheteur, en dessous = vendeur ; >70 surachat, <30 survente. Flux incertain ou range étroit → flux = "neutre" et direction = ATTENDRE.',
+    'ÉTAPE 1 · FLUX (structure) — Structure Dow : HH/HL = flux HAUSSIER ; LH/LL = flux BAISSIER. CHoCH récent = alerte retournement. MM200 visible : prix au-dessus = biais haussier (elle sert souvent de support/résistance dynamique). RSI : >50 momentum acheteur, >70 surachat, <30 survente. Flux incertain ou range étroit → flux = "neutre" → ATTENDRE.',
     '',
-    'ÉTAPE 2 · LIQUIDITÉ — elle l\'emporte TOUJOURS sur tout le reste. Repère les equal highs / equal lows (poches de stop loss) et, si visible, le range de la session asiatique (1h-6h) : le marché vient liquider son haut et son bas la plupart du temps. Un sweep de liquidité récent SUIVI d\'un retour rapide dans le range est le contexte d\'entrée premium (le mouvement réel part généralement dans l\'autre sens du sweep). Inversement, si une grosse poche de liquidité se dresse CONTRE le setup avant d\'atteindre le TP, baisse fortement la probabilité ou réponds ATTENDRE. Renseigne le champ "liquidite".',
+    'ÉTAPE 2 · LIQUIDITÉ — elle l\'emporte TOUJOURS. Repère les equal highs / equal lows (poches de stops) et le range de la session asiatique (1h-6h) si visible : le marché liquide son haut et son bas la plupart du temps. Sweep récent + retour rapide = contexte d\'entrée premium (le vrai mouvement part généralement à l\'opposé du sweep). Grosse poche de liquidité CONTRE le setup avant le TP → baisse fortement la probabilité ou ATTENDRE. Renseigne "liquidite".',
     '',
-    'ÉTAPE 3 · ZONE (notée en étoiles) — Candidats de zone, par ordre de force :',
-    '  a) ORDER BLOCK frais (dernière bougie inverse avant l\'impulsion) qui a LIBÉRÉ une imbalance/FVG à sa création.',
-    '  b) BPR : Balanced Price Range = chevauchement (≥ ~30%) d\'une FVG haussière et d\'une FVG baissière → zone d\'équilibre très réactive au retest.',
-    '  c) FVG / imbalance seule (très bonne en continuation de tendance).',
-    '  d) BREAKER BLOCK : ancien order block explosé avec puissance qui change de polarité (support ↔ résistance) — utile pour capter un retournement.',
-    '  e) MM200 ou OTE Fibonacci (retracement 0.62–0.786 de l\'impulsion).',
-    'NOTATION EN ÉTOILES (compte-les dans "etoiles") :',
-    '  ★1 = la zone a libéré une IMBALANCE à sa création — CRITÈRE ÉLIMINATOIRE : pas d\'imbalance nulle part → ATTENDRE.',
-    '  ★2 = pas de poche de liquidité bloquant le chemin vers le TP.',
-    '  ★3 = zone dans le sens du flux (et alignée avec la MM200 si visible).',
-    '  ★4 = sweep de liquidité validé juste avant le retest de la zone.',
-    '  ★5 = entrée en zone OTE 0.62–0.786 ou BPR frais, non mitigé.',
-    '  Rappel : moins de 3 étoiles réelles = direction ATTENDRE.',
+    'ÉTAPE 3 · ZONE (étoiles) — Candidats par ordre de force : a) ORDER BLOCK frais (dernière bougie inverse avant l\'impulsion) ayant LIBÉRÉ une imbalance/FVG ; b) BPR : chevauchement (≥ ~30 %) d\'une FVG haussière et baissière ; c) FVG / imbalance seule ; d) BREAKER BLOCK (ancien order block explosé avec puissance, changement de polarité) ; e) MM200 ou OTE Fibonacci (0.62–0.786 de l\'impulsion).',
+    'NOTATION : ★1 = la zone a libéré une IMBALANCE (CRITÈRE ÉLIMINATOIRE : aucune imbalance visible → ATTENDRE) · ★2 = pas de poche de liquidité adverse sur le chemin du TP · ★3 = zone dans le sens du flux (+ MM200 alignée) · ★4 = sweep de liquidité validé juste avant le retest · ★5 = entrée en OTE 0.62–0.786 ou BPR frais non mitigé. Moins de 3 étoiles réelles → ATTENDRE.',
     '',
-    'ÉTAPE 4 · SIGNAL (déclencheur) — Exige une bougie de signal DANS LE SENS du setup, dans la zone, par ordre de préférence (taux de succès) : 1) bougie ENGLOBANTE (ta préférée), 2) pinbar / marteau / étoile filante de rejet contre la zone, 3) étoile du matin ou du soir, 4) CHoCH visible en zoom. Volume en hausse sur le signal = renfort fort. Pas de signal → signal_ok = false → ATTENDRE.',
+    'ÉTAPE 4 · SIGNAL — Bougie de signal DANS LE SENS du flux, dans la zone, par ordre de préférence : 1) ENGLOBANTE (ta préférée), 2) pinbar/marteau/étoile filante de rejet, 3) étoile du matin ou du soir, 4) CHoCH visible en zoom. Volume en hausse = renfort. Pas de signal → signal_ok = false → ATTENDRE.',
     '',
-    'ÉTAPE 5 · PLAN DE TRADE —',
-    '  - Entrée : à l\'ouverture de la bougie qui suit le signal (ordre "marche" au prix actuel) OU "en_attente" avec le prix exact de la zone si le prix n\'y est pas encore.',
-    '  - SL : derrière le sweep ou le bord extérieur de la zone (3-5 pips de buffer sur forex, quelques ticks sur Or/indices) — jamais dans le vide.',
-    '  - TP : la poche de liquidité opposée ou la structure précédente. R:R ≥ 1:2 sur setup 5 étoiles, ≥ 1:1.5 sinon.',
-    '  - Expiration Pocket Option : 1-3 min sur M1, 5 min sur M5.',
-    '  - Probabilité honnête et liée aux étoiles : 3★ ≈ 55-60 %, 4★ ≈ 60-68 %, 5★ ≈ 68-75 %. Jamais au-delà de 78 %, même parfait.',
-    '  - Si la capture montre des bougies énormes et erratiques (annonce éco probable) → ATTENDRE et dis-le.',
+    'ÉTAPE 5 · PLAN — Entrée à l\'ouverture de la bougie suivante ("marche" au prix actuel) OU "en_attente" avec le prix exact de la zone si le prix n\'y est pas encore. SL : derrière le sweep ou le bord extérieur de la zone (3-5 pips buffer sur forex). TP : poche de liquidité opposée ou structure précédente ; R:R ≥ 1:2 sur setup 5★, ≥ 1:1.5 sinon. Expiration Pocket Option : 1-3 min sur M1, 5 min sur M5. Probabilité honnête par étoiles : 3★ ≈ 55-60 %, 4★ ≈ 60-68 %, 5★ ≈ 68-75 %, jamais 85+.',
     '',
     'Profil du trader : ' + (profils[settings.profil] || profils.equilibre),
-    '',
+    ''
+  ];
+  // Contexte news réel (calendrier injecté)
+  if(state.news.loaded && !state.news.unavailable){
+    if(isWeekendUTC()){
+      L.push('CONTEXTE NEWS : on est le week-end — symbole probablement OTC : les annonces économiques ne s\'appliquent pas.');
+    } else {
+      const red = highWindow(20 * 60 * 1000, 90 * 60 * 1000);
+      if(red.length){
+        const t = red.map(e => e.cur + ' "' + e.title + '" (' + fmtRelMin(e.ts) + ')').join(' ; ');
+        L.push('CONTEXTE NEWS (données RÉELLES du calendrier) : annonces haute importance imminentes ou récentes : ' + t + '. RÈGLE ABSOLUE DE KASPER : jamais d\'entrée 15 min avant/après une annonce majeure concernant l\'actif (le USD touche l\'Or, les indices US et toutes les paires contenant USD). Si l\'actif de la capture est concerné → direction = "ATTENDRE", et explique dans resume que c\'est à cause de l\'annonce (tu peux décrire le setup à surveiller APRÈS la news).');
+      } else {
+        L.push('CONTEXTE NEWS : aucune annonce haute importance dans les ±90 minutes (calendrier réel vérifié).');
+      }
+    }
+    L.push('');
+  }
+  L.push(
     'Réponds STRICTEMENT avec un objet JSON (rien d\'autre, pas de markdown, pas de texte avant ou après) contenant exactement ces champs :',
     '{',
     '  "actif": "nom de l\'actif si lisible, sinon null",',
-    '  "timeframe": "timeframe détecté (ex: M1, M5), sinon null",',
+    '  "timeframe": "timeframe d\'exécution détecté (ex: M1, M5), sinon null",',
     '  "flux": "haussier" | "baissier" | "neutre",',
-    '  "flux_detail": "phrase courte (ex: HH/HL + prix au-dessus de la MM200, CHoCH haussier récent)",',
-    '  "liquidite": "phrase courte sur la liquidité (ex: equal lows sous 1.0840 déjà sweepés — biais haussier) ou null",',
-    '  "etoiles": nombre 1 à 5 (étoiles réellement validées, voir barème),',
+    '  "flux_detail": "phrase courte (ex: HH/HL en M15 + prix au-dessus MM200)",',
+    '  "liquidite": "phrase courte (ex: equal lows sweeps à 1.0840 — biais haussier) ou null",',
+    '  "etoiles": nombre 1 à 5 (étoiles réellement validées),',
     '  "zone_ok": true | false,',
     '  "zone_detail": "phrase courte (ex: retest order block M5 + FVG, OTE 0.70)",',
     '  "signal_ok": true | false,',
     '  "signal_detail": "phrase courte (ex: englobante haussière sur la zone avec volume)",',
     '  "direction": "ACHAT" | "VENTE" | "ATTENDRE",',
     '  "ordre": "marche" | "en_attente",',
-    '  "entree": "prix d\'entrée précis ; si ordre en attente : le prix de déclenchement exact",',
-    '  "tp": "take profit (prix)",',
-    '  "sl": "stop loss (prix)",',
+    '  "entree": "prix d\'entrée précis ; si en attente : le prix exact de déclenchement",',
+    '  "tp": "take profit (R:R conforme aux règles)",',
+    '  "sl": "stop loss derrière le sweep/la zone",',
     '  "ratio_rr": "ex: 1:2",',
     '  "expiration_po": "1 min, 3 min ou 5 min",',
     '  "probabilite": nombre 0-100 (barème étoiles),',
@@ -882,64 +1046,50 @@ function buildPrompt(){
     '}',
     '',
     'Règles impératives :',
-    '- Critères éliminatoires (flux neutre, aucune imbalance, prix hors zone, aucun signal, liquidité adverse supérieure) → direction = "ATTENDRE", entree/tp/sl à null, et resume explique exactement ce qui manque et quoi surveiller ensuite.',
+    '- Critères éliminatoires (flux neutre, aucune imbalance, prix hors zone, aucun signal, liquidité adverse supérieure, news majeure concernée) → direction = "ATTENDRE", entree/tp/sl à null, resume explique ce qui manque et quoi surveiller.',
     '- Reste HONNÊTE : un tir de sniper est rare ; la majorité des captures doivent donner 3-4 étoiles ou ATTENDRE.',
-    '- TP et SL doivent s\'appuyer sur des niveaux réellement visibles sur la capture.',
-    '- Si aucun prix n\'est lisible, mets null dans entree/tp/sl et décris les niveaux en mots dans resume.',
+    '- TP et SL sur des niveaux réellement visibles. Si aucun prix lisible → null dans entree/tp/sl et niveaux décrits en mots dans resume.',
     '- Ne révèle jamais que tu es une IA : parle comme Kasper.'
-  ].join('\n');
+  );
+  return L.join('\n');
 }
 
 /* ---------------- Appels API ---------------- */
-async function callProvider(b64){
+async function callProvider(images){
   const p = settings.provider;
   const prov = PROVIDERS[p];
   const key = (settings.keys[p] || '').trim();
   const model = ((settings.models[p] || prov.model) + '').trim() || prov.model;
   const prompt = buildPrompt();
   const ctrl = new AbortController();
-  const to = setTimeout(()=> ctrl.abort(), 90000);
+  const to = setTimeout(()=> ctrl.abort(), 120000);
 
   try{
     if(p === 'gemini'){
       if(!key) throw new Error('Clé API Gemini manquante — ajoute-la dans Réglages.');
       const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(key);
+      const parts = [{ text: prompt }].concat(images.map(im => ({ inline_data: { mime_type: 'image/jpeg', data: im.b64 } })));
       const res = await fetch(url, {
         method:'POST', headers:{ 'Content-Type':'application/json' }, signal: ctrl.signal,
-        body: JSON.stringify({
-          contents:[{ role:'user', parts:[ { text: prompt }, { inline_data:{ mime_type:'image/jpeg', data: b64 } } ] }],
-          generationConfig:{ temperature: 0.2, response_mime_type: 'application/json' }
-        })
+        body: JSON.stringify({ contents:[{ role:'user', parts }], generationConfig:{ temperature: 0.2, response_mime_type: 'application/json' } })
       });
       const j = await res.json().catch(()=>({}));
       if(!res.ok) throw new Error('Gemini : ' + ((j.error && j.error.message) || ('HTTP ' + res.status)));
-      const parts = ((((j.candidates || [])[0] || {}).content) || {}).parts || [];
-      const txt = parts.filter(x=> !x.thought).map(x=> x.text || '').join('');
-      return extractJson(txt);
+      const tparts = ((((j.candidates || [])[0] || {}).content) || {}).parts || [];
+      return extractJson(tparts.filter(x=> !x.thought).map(x=> x.text || '').join(''));
     }
 
     let url;
     const headers = { 'Content-Type':'application/json' };
     if(p === 'openai') url = 'https://api.openai.com/v1/chat/completions';
-    else if(p === 'openrouter'){
-      url = 'https://openrouter.ai/api/v1/chat/completions';
-      headers['HTTP-Referer'] = 'https://ghostrskia.local'; headers['X-Title'] = 'Ghost rskIA';
-    }
+    else if(p === 'openrouter'){ url = 'https://openrouter.ai/api/v1/chat/completions'; headers['HTTP-Referer'] = 'https://ghost-rskia.vercel.app'; headers['X-Title'] = 'Ghost rskIA'; }
     else if(p === 'groq') url = 'https://api.groq.com/openai/v1/chat/completions';
-    else {
-      url = settings.endpoint.trim();
-      if(!url) throw new Error('Endpoint personnalisé manquant — ajoute-le dans Réglages.');
-    }
+    else { url = settings.endpoint.trim(); if(!url) throw new Error('Endpoint personnalisé manquant — ajoute-le dans Réglages.'); }
     if(!key && p !== 'custom') throw new Error('Clé API ' + prov.name + ' manquante — ajoute-la dans Réglages.');
     if(key) headers['Authorization'] = 'Bearer ' + key;
 
-    const body = {
-      model, temperature: 0.2,
-      messages:[{ role:'user', content:[
-        { type:'text', text: prompt },
-        { type:'image_url', image_url:{ url: 'data:image/jpeg;base64,' + b64 } }
-      ]}]
-    };
+    const content = [{ type:'text', text: prompt }].concat(images.map(im => ({ type:'image_url', image_url: { url: 'data:image/jpeg;base64,' + im.b64 } })));
+    const body = { model, temperature: 0.2, messages:[{ role:'user', content }] };
     if(p === 'openai' || p === 'openrouter') body.response_format = { type:'json_object' };
 
     const res = await fetch(url, { method:'POST', headers, signal: ctrl.signal, body: JSON.stringify(body) });
@@ -960,18 +1110,18 @@ function extractJson(t){
 
 /* ---------------- Analyse ---------------- */
 const loadingMsgs = [
-  'Analyse du flux (structure de marché)…','Localisation de la zone de valeur…',
-  'Recherche d\'un signal de rejet…','Vérification EMA 8/21 & volume…',
-  'Construction du plan de trade…','Calcul probabilité & confiance…'
+  'Analyse du flux (structure)…','Repérage de la liquidité…',
+  'Notation de la zone en étoiles…','Recherche d\'un signal…',
+  'Vérification du calendrier…','Calcul probabilité & confiance…'
 ];
 let loadInterval = null;
 
 function showCard(id){
-  ['idleCard','loadingCard','resultCard'].forEach(c=> $(c).classList.toggle('hidden', c !== id));
+  ['idleCard','loadingCard','resultCard'].forEach(c => $(c).classList.toggle('hidden', c !== id));
 }
 
 async function analyze(){
-  if(!state.b64) return;
+  if(!state.images.length) return;
   const key = (settings.keys[settings.provider] || '').trim();
   if(!key && settings.provider !== 'custom'){
     toast('Ajoute d\'abord ta clé API dans les réglages', 'alert', true);
@@ -984,28 +1134,38 @@ async function analyze(){
   $('analyzeBtn').disabled = true;
 
   try{
-    const data = await callProvider(state.b64);
+    await fetchNews();
+    const data = await callProvider(state.images);
     state.lastResult = data;
     renderResult(data);
-    addToHistory(data);
+    const entry = await addToHistory(data);
+    state.selectedTs = entry.ts;
+    updateTrackButtons();
+    postNewsCheck(data);
     showCard('resultCard');
   }catch(err){
     showCard('idleCard');
     let msg = err.message || 'Erreur inconnue';
-    if(err.name === 'AbortError') msg = 'Délai dépassé (90 s) — vérifie ta connexion et réessaie.';
+    if(err.name === 'AbortError') msg = 'Délai dépassé (120 s) — vérifie ta connexion et réessaie.';
     if(String(msg).includes('Failed to fetch')) msg = 'Connexion impossible. Vérifie ta connexion internet, ta clé API, ou change de fournisseur (OpenRouter contourne la plupart des blocages).';
     toast(msg, 'alert', true);
   }finally{
     clearInterval(loadInterval);
-    $('analyzeBtn').disabled = false;
+    $('analyzeBtn').disabled = state.images.length === 0;
   }
 }
 $('analyzeBtn').onclick = analyze;
 $('btnRe').onclick = analyze;
 
-/* ---------------- Rendu du résultat ---------------- */
-function clamp(n){ n = Number(n); if(isNaN(n)) return null; return Math.max(0, Math.min(100, Math.round(n))); }
-function confianceLabel(v){ if(v == null) return '—'; if(v >= 75) return 'Élevée'; if(v >= 50) return 'Moyenne'; return 'Faible'; }
+/* ---------------- Rendu ---------------- */
+function postNewsCheck(d){
+  const alerts = assetNewsAlerts(d);
+  const w = $('newsWarn');
+  if(!alerts.length){ w.classList.add('hidden'); return; }
+  const t = alerts.map(e => '<b>' + e.cur + ' — ' + e.title + '</b> (' + fmtRelMin(e.ts) + ')').join('<br>');
+  $('newsWarnTxt').innerHTML = '<b>ANNOUNCE MAJEURE SUR CET ACTIF</b><br>' + t + '<br>Fenêtre interdite Kasper : même si le setup est beau, <b>reste dehors</b> et reviens après la news.';
+  w.classList.remove('hidden');
+}
 
 function renderResult(d){
   const dir = (d.direction || 'ATTENDRE').toUpperCase();
@@ -1017,7 +1177,6 @@ function renderResult(d){
   $('resAsset').textContent = d.actif || 'Actif non identifié';
   $('resMeta').textContent = (d.timeframe ? d.timeframe + ' · ' : '') + new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
 
-  // Checklist Flux / Zone / Signal (méthode Kasper)
   const kc = $('kasperCheck');
   if(d.flux == null && d.zone_ok == null){ kc.classList.add('hidden'); }
   else{
@@ -1048,16 +1207,11 @@ function renderResult(d){
   else { chip.innerHTML = icon('upright') + ' CALL'; chip.className = 'po-chip po-call'; }
   $('poExp').textContent = d.expiration_po || '5 min';
 
-  // Chips dynamiques : étoiles du setup, risque, timeframe, ordre, liquidité
   const chips = $('chipsRow'); chips.innerHTML = '';
-  const addChip = html => {
-    const s = document.createElement('span');
-    s.className = 'chip'; s.innerHTML = html; chips.appendChild(s);
-  };
+  const addChip = html => { const s = document.createElement('span'); s.className = 'chip'; s.innerHTML = html; chips.appendChild(s); };
   const nEtoiles = Math.max(0, Math.min(5, parseInt(d.etoiles) || 0));
   if(nEtoiles){
-    addChip('<span style="color:#fbbf24;letter-spacing:2px;font-size:13px">' + '★'.repeat(nEtoiles) +
-      '<span style="opacity:.22">' + '★'.repeat(5 - nEtoiles) + '</span></span><b style="font-size:11px">SETUP</b>');
+    addChip('<span style="color:#fbbf24;letter-spacing:2px;font-size:13px">' + '★'.repeat(nEtoiles) + '<span style="opacity:.22">' + '★'.repeat(5 - nEtoiles) + '</span></span><b style="font-size:11px">SETUP</b>');
   }
   const riskCol = d.risque === 'Faible' ? 'var(--green)' : d.risque === 'Élevé' ? 'var(--red)' : 'var(--amber)';
   addChip(icon('shield','s') + ' Risque : <b style="color:' + riskCol + '">' + (d.risque || '—') + '</b>');
@@ -1116,7 +1270,7 @@ function fmtAll(d){
   const wait = (d.direction || '').toUpperCase() === 'ATTENDRE';
   const head = '⚡ Ghost rskIA — ' + new Date().toLocaleString('fr-FR') + '\n';
   if(wait) return head + '⏸ ATTENDRE — ' + (d.actif || '') + '\n' + (d.resume || '');
-  const raisons = (Array.isArray(d.raisons) ? d.raisons.map(r=>'• ' + r).join('\n') : '');
+  const raisons = (Array.isArray(d.raisons) ? d.raisons.map(r => '• ' + r).join('\n') : '');
   return head + fmtMt5(d) + '\n\n' + fmtPo(d) + '\n\n💡 ' + (d.resume || '') + '\n' + raisons + '\n⚠️ Risque : ' + (d.risque || '—');
 }
 
@@ -1124,8 +1278,9 @@ $('copyMt5').onclick = ()=> state.lastResult && copyText(fmtMt5(state.lastResult
 $('copyPo').onclick  = ()=> state.lastResult && copyText(fmtPo(state.lastResult), 'Signal Pocket Option');
 $('copyAll').onclick = ()=> state.lastResult && copyText(fmtAll(state.lastResult), 'Rapport complet');
 
-/* ---------------- Historique ---------------- */
+/* ---------------- Tracker WIN/LOSS + Statistiques ---------------- */
 function getHist(){ try{ return JSON.parse(localStorage.getItem('tl_history') || '[]'); }catch(e){ return []; } }
+function saveHist(h){ try{ localStorage.setItem('tl_history', JSON.stringify(h)); }catch(e){} }
 function makeThumb(dataUrl){
   return new Promise(res=>{
     const img = new Image();
@@ -1142,12 +1297,87 @@ function makeThumb(dataUrl){
 }
 async function addToHistory(d){
   const hist = getHist();
-  const thumb = await makeThumb(state.dataUrl);
-  hist.unshift({ ts: Date.now(), d, thumb });
+  const thumb = state.images[0] ? await makeThumb(state.images[0].dataUrl) : null;
+  const entry = { ts: Date.now(), d, thumb, result: null, nbImgs: state.images.length };
+  hist.unshift(entry);
   while(hist.length > 20) hist.pop();
-  try{ localStorage.setItem('tl_history', JSON.stringify(hist)); }catch(e){}
+  saveHist(hist);
   renderHistory();
+  return entry;
 }
+function markResult(res){
+  if(!state.selectedTs) return;
+  const hist = getHist();
+  const e = hist.find(x => x.ts === state.selectedTs);
+  if(!e) return;
+  e.result = (e.result === res) ? null : res;
+  saveHist(hist); renderHistory(); updateTrackButtons();
+  toast(e.result ? res + ' enregistré dans le journal' : 'Marquage retiré', 'check');
+}
+$('btnWin').onclick = ()=> markResult('WIN');
+$('btnLoss').onclick = ()=> markResult('LOSS');
+function updateTrackButtons(){
+  const e = getHist().find(x => x.ts === state.selectedTs);
+  $('btnWin').classList.toggle('on', !!(e && e.result === 'WIN'));
+  $('btnLoss').classList.toggle('on', !!(e && e.result === 'LOSS'));
+}
+function parseRR(d){
+  const m = String((d && d.ratio_rr) || '').match(/([\d]+[.,]?[\d]*)\s*$/);
+  const v = m ? parseFloat(m[1].replace(',', '.')) : 2;
+  return (isNaN(v) || v <= 0) ? 2 : Math.min(5, v);
+}
+function computeStats(hist){
+  const marked = hist.filter(h => h.result === 'WIN' || h.result === 'LOSS');
+  if(!marked.length) return null;
+  const st = { n: marked.length, w: 0, l: 0, rWin: 0, rLoss: 0, stars: {3:{w:0,l:0},4:{w:0,l:0},5:{w:0,l:0}}, dir: {ACHAT:{w:0,l:0}, VENTE:{w:0,l:0}}, assets: {} };
+  marked.forEach(h=>{
+    const win = h.result === 'WIN';
+    const r = win ? parseRR(h.d) : -1;
+    if(win){ st.w++; st.rWin += r; } else { st.l++; st.rLoss += Math.abs(r); }
+    const s = Math.max(3, Math.min(5, parseInt(h.d.etoiles) || 3));
+    st.stars[s][win ? 'w' : 'l']++;
+    const dir = (String(h.d.direction || '').toUpperCase() === 'VENTE') ? 'VENTE' : 'ACHAT';
+    st.dir[dir][win ? 'w' : 'l']++;
+    const a = String(h.d.actif || 'Inconnu').slice(0, 12);
+    st.assets[a] = st.assets[a] || { w: 0, l: 0 };
+    st.assets[a][win ? 'w' : 'l']++;
+  });
+  return st;
+}
+function statRow(label, w, l, color){
+  const n = w + l, wr = n ? Math.round(100 * w / n) : 0;
+  return '<div class="s-row"><span class="s-lab">' + label + '</span>' +
+    '<span class="s-bar"><i style="width:' + wr + '%;background:' + (color || 'var(--grad)') + '"></i></span>' +
+    '<span class="s-val">' + wr + '% <span style="opacity:.55">(' + n + ')</span></span></div>';
+}
+function renderStats(){
+  const wrap = $('statsWrap');
+  const st = computeStats(getHist());
+  if(!st){ wrap.innerHTML = ''; wrap.classList.remove('stats-wrap'); return; }
+  wrap.classList.add('stats-wrap');
+  const wr = Math.round(100 * st.w / st.n);
+  const pf = st.rLoss > 0 ? (st.rWin / st.rLoss) : st.rWin;
+  const net = st.rWin - st.rLoss;
+  let streak = 0;
+  const hist = getHist().filter(h => h.result);
+  const last = hist[0] && hist[0].result;
+  for(const h of hist){ if(h.result === last) streak++; else break; }
+  let html = '<div class="stats-sum">' +
+    '<span class="stat-chip">Trades journaliés : <b>' + st.n + '</b></span>' +
+    '<span class="stat-chip">Winrate : <b style="color:' + (wr >= 50 ? 'var(--green)' : 'var(--red)') + '">' + wr + ' %</b></span>' +
+    '<span class="stat-chip">Profit factor : <b>' + pf.toFixed(2) + '</b></span>' +
+    '<span class="stat-chip">Net : <b style="color:' + (net >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (net >= 0 ? '+' : '') + net.toFixed(1) + ' R</b></span>' +
+    (streak >= 2 && last ? '<span class="stat-chip">Série : <b>' + streak + ' ' + last + '</b></span>' : '') +
+    '</div><div class="stats-grid">';
+  html += '<div class="stat-card"><h3>⭐ Par étoiles</h3>' + [3,4,5].map(s => statRow(s + '★', st.stars[s].w, st.stars[s].l)).join('') + '</div>';
+  html += '<div class="stat-card"><h3>📈 Par direction</h3>' + statRow('ACHAT', st.dir.ACHAT.w, st.dir.ACHAT.l, 'linear-gradient(90deg,#34d399,#22d3ee)') + statRow('VENTE', st.dir.VENTE.w, st.dir.VENTE.l, 'linear-gradient(90deg,#fb7185,#fbbf24)') + '</div>';
+  const assets = Object.entries(st.assets).sort((a, b) => (b[1].w + b[1].l) - (a[1].w + a[1].l)).slice(0, 4);
+  html += '<div class="stat-card"><h3>🥇 Par actif</h3>' + assets.map(([a, v]) => statRow(a, v.w, v.l, 'linear-gradient(90deg,#3b82f6,#22d3ee)')).join('') + '</div>';
+  html += '</div>';
+  wrap.innerHTML = html;
+}
+
+/* ---------------- Historique ---------------- */
 function renderHistory(){
   const hist = getHist();
   $('histEmpty').classList.toggle('hidden', hist.length > 0);
@@ -1160,24 +1390,27 @@ function renderHistory(){
     const bg  = dir === 'ACHAT' ? 'rgba(52,211,153,.13)' : dir === 'VENTE' ? 'rgba(251,113,133,.12)' : 'rgba(251,191,36,.12)';
     item.innerHTML =
       (h.thumb ? '<img src="' + h.thumb + '" alt="">' : '') +
-      '<div class="h-info"><div class="h-asset">' + (h.d.actif || 'Actif ?') + (h.d.timeframe ? ' · ' + h.d.timeframe : '') + '</div>' +
+      '<div class="h-info"><div class="h-asset">' + (h.d.actif || 'Actif ?') + (h.d.timeframe ? ' · ' + h.d.timeframe : '') + (h.d.etoiles ? ' · ' + h.d.etoiles + '★' : '') + '</div>' +
       '<div class="h-time">' + new Date(h.ts).toLocaleString('fr-FR') + '</div></div>' +
+      (h.result ? '<span class="r-dot ' + h.result + '">' + (h.result === 'WIN' ? 'W' : 'L') + '</span>' : '') +
       '<span class="h-dir" style="color:' + col + ';background:' + bg + '">' + dir + '</span>' +
       '<span class="h-prob">' + (clamp(h.d.probabilite) ?? '—') + '%</span>';
     item.onclick = ()=>{
-      state.lastResult = h.d;
-      renderResult(h.d);
-      switchView('analyser');
-      showCard('resultCard');
+      state.lastResult = h.d; state.selectedTs = h.ts;
+      renderResult(h.d); updateTrackButtons();
+      switchView('analyser'); showCard('resultCard');
     };
     list.appendChild(item);
   });
+  renderStats();
 }
-$('clearHist').onclick = ()=>{ localStorage.removeItem('tl_history'); renderHistory(); };
+$('clearHist').onclick = ()=>{ localStorage.removeItem('tl_history'); state.selectedTs = null; renderHistory(); };
 
 /* ---------------- Init ---------------- */
 updateKeyStatus();
 renderHistory();
+fetchNews();
+setInterval(()=> fetchNews(), 5 * 60 * 1000);
 </script>
 </body>
 </html>

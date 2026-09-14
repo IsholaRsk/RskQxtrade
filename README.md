@@ -18,6 +18,10 @@
 - 📖 **Guide intégré** : meilleures heures de trade, indicateurs à afficher, gestion du risque
 - 🕘 **Historique** des 20 dernières analyses (stockées en local)
 - 🎨 Interface noire glassmorphism bleu/cyan/vert, navigation mobile en bas d'écran
+- 📊 **Tracker de résultats (journal Kasper)** : marque chaque trade WIN/LOSS → winrate global, par étoiles (★3/★4/★5), par direction, par actif, profit factor, P&L en R et série en cours
+- 🥇 **Multi-captures** : analyse M1/M5 (exécution) **+** M15/H1 (contexte) ensemble — confluence multi-timeframes, étoiles renforcées
+- 📰 **Filtre news en direct** : calendrier économique réel vérifié à chaque upload — bannière verte/ambre/rouge, et l'IA force ATTENDRE si une annonce 4-5★ tombe dans la fenêtre interdite
+- 📲 **Bot Telegram** : envoie ta capture au bot → même analyse Kasper directement dans Telegram (`api/telegram.py`, webhook serverless)
 - 🔑 **Bring your own key** : fonctionne avec *ta* clé API (Gemini **gratuit**, OpenAI, OpenRouter, Groq, ou endpoint compatible)
 
 ## 🚀 Utilisation
@@ -47,6 +51,8 @@ Voir **[GUIDE.md](GUIDE.md)** — les meilleures heures de session (Londres 8h-1
 | `GUIDE.md` | Guide d'utilisation complet (heures, indicateurs, risque) |
 | `key.example.js` | Modèle de pré-configuration de la clé API |
 | `assets/` | Images de démo |
+| `api/news.py` | Endpoint calendrier économique (Vercel serverless, CORS ouvert) |
+| `api/telegram.py` | Bot Telegram (webhook serverless, même cerveau Kasper) |
 
 ## ☑️ Checklist avant chaque trade
 
