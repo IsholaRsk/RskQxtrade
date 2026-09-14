@@ -1,0 +1,6 @@
+# Secrets & local
+key.local.js
+test_api.py
+test_chart.png
+__pycache__/
+.DS_Store

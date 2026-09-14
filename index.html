@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ghost rskIA — Analyse de graphiques</title>
+<style>
+:root{
+  --bg:#030509;
+  --txt:#eaf2fb; --muted:#8293a9;
+  --blue:#3b82f6; --cyan:#22d3ee; --green:#34d399; --red:#fb7185; --amber:#fbbf24;
+  --grad:linear-gradient(120deg,#3b82f6 0%,#22d3ee 48%,#34d399 100%);
+  --glass:linear-gradient(165deg,rgba(255,255,255,.062),rgba(255,255,255,.018));
+  --glass2:linear-gradient(165deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
+  --stroke:rgba(255,255,255,.09);
+  --r:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg); color:var(--txt); min-height:100vh;
+  padding-bottom:120px; overflow-x:hidden;
+}
+.hidden{display:none !important}
+::selection{background:rgba(34,211,238,.25)}
+
+/* Glow orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(110px);z-index:-1;pointer-events:none;opacity:.55}
+.orb.a{width:560px;height:560px;background:#1d4ed8;top:-180px;left:-140px;opacity:.34;animation:drift 26s ease-in-out infinite alternate}
+.orb.b{width:480px;height:480px;background:#0891b2;top:12%;right:-180px;opacity:.3;animation:drift 32s ease-in-out infinite alternate-reverse}
+.orb.c{width:440px;height:440px;background:#047857;bottom:-160px;left:28%;opacity:.26;animation:drift 38s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(50px,36px) scale(1.08)}}
+
+/* Icônes */
+.ic{width:18px;height:18px;flex:none;vertical-align:middle}
+.ic.s{width:15px;height:15px}
+.ic.l{width:24px;height:24px}
+.ic.xl{width:38px;height:38px}
+
+/* ---------- Header ---------- */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:1060px;margin:0 auto;padding:18px 20px 6px;
+}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{
+  width:40px;height:40px;border-radius:13px;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 22px rgba(34,211,238,.35), inset 0 1px 1px rgba(255,255,255,.35);
+}
+.logo-mark .ic{width:21px;height:21px;color:#02141c;stroke-width:2.4}
+.logo h1{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.logo h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo small{display:block;font-size:10px;font-weight:600;letter-spacing:.22em;color:var(--muted);margin-top:2px}
+.status-pill{
+  display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;
+  background:var(--glass2);border:1px solid var(--stroke);cursor:pointer;
+  font-size:12px;font-weight:600;color:var(--muted);backdrop-filter:blur(14px);transition:.2s;
+}
+.status-pill:hover{border-color:rgba(34,211,238,.5);color:var(--txt)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red)}
+.dot.ok{background:var(--green);box-shadow:0 0 10px var(--green)}
+
+/* ---------- Layout ---------- */
+main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
+.view{display:none;animation:fadeUp .35s ease}
+.view.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.grid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:940px){.grid{grid-template-columns:400px 1fr}}
+
+.card{
+  background:var(--glass);border:1px solid var(--stroke);border-radius:var(--r);
+  padding:22px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 24px 60px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.card h2{font-size:15px;font-weight:700;letter-spacing:-.01em;margin-bottom:16px;display:flex;align-items:center;gap:9px}
+.card h2 .ic{color:var(--cyan)}
+
+.btn{
+  border:1px solid var(--stroke);background:rgba(255,255,255,.045);color:var(--txt);
+  padding:10px 15px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;
+  transition:.18s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn:hover{border-color:rgba(34,211,238,.55);color:var(--cyan)}
+.btn.small{padding:7px 11px;font-size:12px}
+
+/* ---------- Dropzone ---------- */
+#dropzone{
+  border:1.5px dashed rgba(255,255,255,.16);border-radius:16px;
+  padding:30px 18px;text-align:center;cursor:pointer;transition:.22s;
+  background:rgba(255,255,255,.02);
+}
+#dropzone .ic.xl{color:var(--muted);margin-bottom:10px;transition:.22s}
+#dropzone:hover,#dropzone.over{border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.05)}
+#dropzone:hover .ic.xl,#dropzone.over .ic.xl{color:var(--cyan);transform:translateY(-2px)}
+#dropzone p{font-size:13px;color:var(--muted);line-height:1.65}
+#dropzone p b{color:var(--txt)}
+#dropzone kbd{
+  background:rgba(255,255,255,.07);border:1px solid var(--stroke);border-radius:6px;
+  padding:1px 7px;font-size:11px;font-family:inherit;
+}
+#previewWrap{margin-top:14px;position:relative}
+#previewWrap img{width:100%;border-radius:14px;border:1px solid var(--stroke);display:block}
+#clearImg{
+  position:absolute;top:9px;right:9px;width:30px;height:30px;border-radius:10px;cursor:pointer;
+  background:rgba(3,5,9,.75);border:1px solid var(--stroke);color:var(--txt);
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);
+}
+#clearImg:hover{color:var(--red);border-color:rgba(251,113,133,.5)}
+
+#analyzeBtn{
+  width:100%;margin-top:16px;padding:16px;border:none;border-radius:15px;
+  background:var(--grad);color:#fff;font-size:14px;font-weight:800;
+  letter-spacing:.07em;text-transform:uppercase;cursor:pointer;transition:.2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 12px 32px rgba(34,211,238,.28), inset 0 1px 0 rgba(255,255,255,.35);
+}
+#analyzeBtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 16px 40px rgba(34,211,238,.42)}
+#analyzeBtn:disabled{opacity:.4;cursor:not-allowed}
+#analyzeBtn .ic{color:#fff}
+
+.howto{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.howto div{display:flex;gap:11px;align-items:flex-start;font-size:12.5px;color:var(--muted);line-height:1.55}
+.howto .ic{color:var(--cyan);margin-top:1px}
+
+/* ---------- Loading ---------- */
+.spin{animation:rot 1s linear infinite;transform-origin:center;margin:30px auto 16px;display:block}
+@keyframes rot{to{transform:rotate(360deg)}}
+#loadingText{text-align:center;color:var(--muted);font-size:13px;min-height:22px;padding-bottom:14px}
+
+/* ---------- Résultat ---------- */
+.res-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.dir-badge{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:11px 18px;border-radius:14px;font-size:16px;font-weight:800;letter-spacing:.03em;
+}
+.dir-buy{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.4);box-shadow:0 0 24px rgba(52,211,153,.12)}
+.dir-sell{background:rgba(251,113,133,.1);color:var(--red);border:1px solid rgba(251,113,133,.4);box-shadow:0 0 24px rgba(251,113,133,.1)}
+.dir-wait{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.4)}
+.res-asset{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.res-meta{font-size:12px;color:var(--muted);margin-top:3px}
+#btnRe{margin-left:auto}
+
+.signal-block{
+  background:var(--glass2);border:1px solid var(--stroke);border-radius:16px;
+  padding:16px;margin-bottom:14px;backdrop-filter:blur(12px);
+}
+.sb-title{
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.sb-title .ic.s{color:var(--cyan)}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:10px;margin-bottom:13px}
+.lvl{background:rgba(255,255,255,.035);border:1px solid var(--stroke);border-radius:12px;padding:10px 13px;display:flex;flex-direction:column;gap:4px}
+.lvl span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.lvl b{font-size:15px;font-variant-numeric:tabular-nums;font-weight:700}
+.lvl.tp b{color:var(--green)} .lvl.sl b{color:var(--red)}
+.po-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px;margin-bottom:13px;color:var(--muted)}
+.po-line b{color:var(--txt)}
+.po-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 15px;border-radius:11px;font-weight:800;font-size:15px}
+.po-call{background:rgba(52,211,153,.13);color:var(--green);border:1px solid rgba(52,211,153,.35)}
+.po-put{background:rgba(251,113,133,.12);color:var(--red);border:1px solid rgba(251,113,133,.35)}
+
+.copy-btn{
+  width:100%;padding:11px;border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;
+  border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.07);color:var(--cyan);
+  display:flex;align-items:center;justify-content:center;gap:9px;transition:.16s;
+}
+.copy-btn:hover{background:rgba(34,211,238,.15);box-shadow:0 0 22px rgba(34,211,238,.15)}
+
+.gauges{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:560px){.gauges{grid-template-columns:1fr}}
+.gauge{background:var(--glass2);border:1px solid var(--stroke);border-radius:15px;padding:14px 15px}
+.gauge .g-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-bottom:9px;gap:8px}
+.gauge .g-top>span:first-child{display:flex;align-items:center;gap:7px}
+.gauge .g-val{font-weight:800;color:var(--txt);font-size:13.5px;font-variant-numeric:tabular-nums}
+.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;width:0;transition:width .9s cubic-bezier(.22,1,.36,1)}
+
+.risk-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{
+  font-size:12px;padding:6px 12px;border-radius:99px;color:var(--muted);
+  border:1px solid var(--stroke);background:rgba(255,255,255,.035);
+  display:inline-flex;align-items:center;gap:7px;
+}
+.chip b{color:var(--txt)}
+
+.exp{background:var(--glass2);border:1px solid var(--stroke);border-radius:16px;padding:16px}
+.exp p{font-size:13.8px;line-height:1.68;margin-bottom:10px}
+.exp ul{list-style:none}
+.exp li{font-size:13px;color:#bfcddd;padding:6px 0 6px 24px;position:relative;line-height:1.55}
+.exp li::before{content:"";position:absolute;left:6px;top:13px;width:7px;height:7px;border-radius:2px;background:var(--grad);transform:rotate(45deg)}
+
+.warn{
+  margin-top:14px;font-size:11.8px;color:var(--muted);line-height:1.65;
+  border:1px solid rgba(251,191,36,.22);background:rgba(251,191,36,.045);
+  padding:12px 14px;border-radius:13px;display:flex;gap:10px;align-items:flex-start;
+}
+.warn .ic{color:var(--amber);margin-top:1px}
+.warn b{color:#e5c374}
+
+#copyAll{
+  width:100%;margin-top:14px;padding:13px;border-radius:14px;cursor:pointer;
+  background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.4);color:#7eabf7;
+  font-weight:700;font-size:13px;transition:.16s;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+}
+#copyAll:hover{background:rgba(59,130,246,.2)}
+
+.empty-state{text-align:center;padding:42px 22px;color:var(--muted)}
+.empty-state .ic.big{width:46px;height:46px;color:rgba(34,211,238,.5);margin-bottom:14px}
+.empty-state p{font-size:13.5px;line-height:1.7}
+
+/* ---------- Historique ---------- */
+.view-head{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 16px}
+.view-head h2{font-size:17px;font-weight:800;letter-spacing:-.01em;display:flex;gap:10px;align-items:center}
+.view-head h2 .ic{color:var(--cyan)}
+#histList{display:flex;flex-direction:column;gap:10px}
+.hist-item{
+  display:flex;align-items:center;gap:13px;padding:12px 14px;cursor:pointer;transition:.16s;
+  background:var(--glass2);border:1px solid var(--stroke);border-radius:16px;backdrop-filter:blur(10px);
+}
+.hist-item:hover{border-color:rgba(34,211,238,.5);transform:translateX(3px)}
+.hist-item img{width:62px;height:40px;object-fit:cover;border-radius:9px;border:1px solid var(--stroke)}
+.hist-item .h-info{flex:1;min-width:0}
+.hist-item .h-asset{font-size:13.5px;font-weight:700}
+.hist-item .h-time{font-size:11.5px;color:var(--muted);margin-top:2px}
+.h-dir{font-size:10.5px;font-weight:800;padding:5px 10px;border-radius:8px;letter-spacing:.05em}
+.h-prob{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
+
+/* ---------- Réglages ---------- */
+.field{margin-bottom:20px}
+.field label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.field label .ic.s{color:var(--cyan)}
+.field input,.field select{
+  width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--stroke);
+  background:rgba(255,255,255,.04);color:var(--txt);font-size:13.5px;outline:none;
+  transition:.16s;font-family:inherit;
+}
+.field input:focus,.field select:focus{border-color:rgba(34,211,238,.6);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.pills{display:flex;flex-wrap:wrap;gap:9px}
+.pill{
+  padding:9px 15px;border-radius:99px;border:1px solid var(--stroke);
+  background:rgba(255,255,255,.035);font-size:12.5px;font-weight:600;
+  cursor:pointer;color:var(--muted);transition:.16s;display:inline-flex;align-items:center;
+}
+.pill.sel{border-color:rgba(34,211,238,.7);color:var(--cyan);background:rgba(34,211,238,.09);box-shadow:0 0 18px rgba(34,211,238,.12)}
+.pill .tag{font-size:9px;font-weight:800;letter-spacing:.08em;background:rgba(52,211,153,.16);color:var(--green);padding:2px 7px;border-radius:6px;margin-left:7px}
+.hint{font-size:11.8px;color:var(--muted);margin-top:8px;line-height:1.6}
+.hint a{color:var(--cyan);text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.4)}
+.hint b{color:var(--txt)}
+.key-wrap{display:flex;gap:9px}
+.key-wrap input{flex:1}
+#saveSettings{
+  width:100%;padding:14px;border:none;border-radius:14px;background:var(--grad);color:#fff;
+  font-size:14px;font-weight:800;letter-spacing:.05em;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  box-shadow:0 10px 28px rgba(34,211,238,.25), inset 0 1px 0 rgba(255,255,255,.3);transition:.2s;
+}
+#saveSettings:hover{transform:translateY(-1px)}
+.sec-note{
+  margin-top:18px;font-size:11.5px;color:var(--muted);line-height:1.65;
+  background:var(--glass2);border:1px solid var(--stroke);border-radius:13px;padding:12px 14px;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.sec-note .ic{color:var(--cyan);margin-top:1px}
+
+/* ---------- Bottom nav ---------- */
+.bottomnav{
+  position:fixed;bottom:calc(12px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  width:min(430px,calc(100% - 24px));padding:8px;border-radius:26px;
+  background:rgba(8,12,20,.75);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 50px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.06);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;z-index:40;
+}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0 9px;
+  border:none;background:transparent;color:var(--muted);border-radius:19px;cursor:pointer;
+  font-size:10px;font-weight:600;letter-spacing:.04em;transition:.22s;font-family:inherit;
+}
+.nav-btn .ic{width:21px;height:21px;transition:.22s}
+.nav-btn:active{transform:scale(.94)}
+.nav-btn.active{color:var(--txt);background:rgba(255,255,255,.07)}
+.nav-btn.active .ic{color:var(--cyan);filter:drop-shadow(0 0 9px rgba(34,211,238,.7))}
+.nav-btn .ind{width:4px;height:4px;border-radius:50%;background:transparent;transition:.22s;margin-top:-1px}
+.nav-btn.active .ind{background:var(--cyan);box-shadow:0 0 7px var(--cyan)}
+
+/* ---------- Toast ---------- */
+#toast{
+  position:fixed;bottom:calc(108px + env(safe-area-inset-bottom));left:50%;
+  transform:translateX(-50%) translateY(30px);opacity:0;
+  background:rgba(8,12,20,.9);border:1px solid rgba(34,211,238,.45);color:var(--txt);
+  padding:12px 20px;border-radius:14px;font-size:13px;font-weight:600;
+  z-index:60;transition:.3s cubic-bezier(.22,1,.36,1);box-shadow:0 14px 40px rgba(0,0,0,.6);
+  max-width:90vw;text-align:center;backdrop-filter:blur(16px);pointer-events:none;
+  display:flex;align-items:center;gap:9px;
+}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast.err{border-color:rgba(251,113,133,.55)}
+
+/* ---------- Stratégie Kasper ---------- */
+.k-title{font-size:13.5px;font-weight:700;margin-bottom:13px}
+.k-title b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.k-step{display:flex;gap:11px;align-items:flex-start;margin-bottom:11px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.k-step b{color:var(--txt);letter-spacing:.04em}
+.k-n{width:21px;height:21px;border-radius:7px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:var(--cyan);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
+.k-rules{margin-top:14px;padding-top:12px;border-top:1px solid var(--stroke);font-size:11px;color:var(--muted);line-height:1.75}
+
+.kasper-check{background:var(--glass2);border:1px solid var(--stroke);border-radius:16px;padding:13px 15px;margin-bottom:14px}
+.kc-row{display:flex;align-items:center;gap:11px;padding:5px 0;flex-wrap:wrap}
+.kc-label{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--muted);width:54px;flex:none}
+.kc-val{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:13px;font-weight:600}
+.kc-detail{color:var(--muted);font-size:12.5px;font-weight:400}
+
+/* ---------- Guide ---------- */
+.g-table{width:100%;border-collapse:collapse;font-size:12.5px;line-height:1.55}
+.g-table td{padding:9px 8px;border-bottom:1px solid var(--stroke);color:var(--muted);vertical-align:top}
+.g-table td:first-child{font-weight:700;color:var(--txt);white-space:nowrap;font-size:12px}
+.g-table tr:last-child td{border-bottom:none}
+.g-table b{color:var(--txt)}
+.g-table a{color:var(--cyan);text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.4)}
+</style>
+</head>
+<body>
+
+<!-- ================= BIBLIOTHÈQUE D'ICÔNES (SVG) ================= -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/><stop offset="50%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+  <symbol id="i-ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></symbol>
+  <symbol id="i-droplet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-upright" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></symbol>
+  <symbol id="i-downright" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="7" x2="17" y2="17"/><polyline points="17 7 17 17 7 17"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+  <symbol id="i-crosshair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+</svg>
+
+<div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark"><svg class="ic"><use href="#i-ghost"/></svg></div>
+    <div>
+      <h1>Ghost <em>rskIA</em></h1>
+      <small>POCKET OPTION · MT5</small>
+    </div>
+  </div>
+  <button class="status-pill" id="statusPill">
+    <span class="dot" id="keyDot"></span><span id="keyLabel">Aucune clé API</span>
+  </button>
+</header>
+
+<main>
+  <!-- ================= VUE : ANALYSER ================= -->
+  <section class="view active" id="view-analyser">
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-image"/></svg> Capture du graphique</h2>
+          <div id="dropzone">
+            <svg class="ic xl"><use href="#i-image"/></svg>
+            <p><b>Clique</b> pour choisir une image, glisse ta capture ici,<br>ou colle-la avec <kbd>Ctrl</kbd> + <kbd>V</kbd></p>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" class="hidden">
+          <div id="previewWrap" class="hidden">
+            <img id="previewImg" alt="Aperçu du graphique">
+            <button id="clearImg" title="Retirer l'image"><svg class="ic s"><use href="#i-x"/></svg></button>
+          </div>
+          <button id="analyzeBtn" disabled><svg class="ic"><use href="#i-zap"/></svg> Analyser le graphique</button>
+
+          <div class="howto">
+            <div><svg class="ic s"><use href="#i-camera"/></svg><span>Capture ton graphique Pocket Option ou MT5 (bougies + indicateurs bien visibles)</span></div>
+            <div><svg class="ic s"><use href="#i-clipboard"/></svg><span>Colle-la ici — <kbd>Ctrl</kbd>+<kbd>V</kbd> sur PC, galerie ou photo sur mobile</span></div>
+            <div><svg class="ic s"><use href="#i-zap"/></svg><span>L'IA détecte tendance, supports/résistances, chandeliers &amp; indicateurs</span></div>
+            <div><svg class="ic s"><use href="#i-copy"/></svg><span>Signal validé uniquement si les 3 conditions Kasper sont réunies</span></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <h2><svg class="ic"><use href="#i-zap"/></svg> Stratégie active</h2>
+          <div class="k-title">Méthode <b>Kasper · SMC complet</b></div>
+          <div class="k-step"><span class="k-n">1</span><div><b>FLUX</b> · structure Dow (HH/HL ou LH/LL) + moyenne mobile 200 — on ne trade que dans son sens</div></div>
+          <div class="k-step"><span class="k-n">2</span><div><b>LIQUIDITÉ</b> · sweep des equal highs/lows ou du range asiatique — la liquidité l'emporte toujours</div></div>
+          <div class="k-step"><span class="k-n">3</span><div><b>ZONE</b> · order block avec imbalance (critère éliminatoire), BPR, FVG, OTE Fibonacci 0.62–0.786 — notée en étoiles</div></div>
+          <div class="k-step"><span class="k-n">4</span><div><b>SIGNAL</b> · englobante &gt; pinbar de rejet &gt; étoile du matin — volume en renfort, sinon on n'entre pas</div></div>
+          <div class="k-rules">Entrée à la bougie suivante · SL derrière le sweep/la zone · R:R ≥ 1:2 sur setup 5★ · min. 3★ pour trader · pas d'entrée autour d'une news 4–5★</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" id="idleCard">
+          <div class="empty-state">
+            <svg class="ic big" viewBox="0 0 24 24" fill="none" stroke="url(#lg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <p><b style="color:var(--txt)">En attente d'une capture…</b><br>
+            Colle une capture de graphique et l'IA construira un plan de trade complet :<br>
+            direction, point d'entrée, objectifs et gestion du risque.</p>
+          </div>
+        </div>
+
+        <div class="card hidden" id="loadingCard">
+          <svg class="spin" width="48" height="48" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>
+            <circle cx="25" cy="25" r="20" fill="none" stroke="url(#lg)" stroke-width="4" stroke-linecap="round" stroke-dasharray="90 200"/>
+          </svg>
+          <div id="loadingText">Lecture des chandeliers…</div>
+        </div>
+
+        <div class="card hidden" id="resultCard">
+          <div class="res-head">
+            <div class="dir-badge" id="dirBadge">—</div>
+            <div>
+              <div class="res-asset" id="resAsset">—</div>
+              <div class="res-meta" id="resMeta">—</div>
+            </div>
+            <button class="btn small" id="btnRe"><svg class="ic s"><use href="#i-refresh"/></svg> Ré-analyser</button>
+          </div>
+
+          <div class="kasper-check hidden" id="kasperCheck">
+            <div class="kc-row"><span class="kc-label">FLUX</span><span class="kc-val" id="kcFlux">—</span></div>
+            <div class="kc-row"><span class="kc-label">ZONE</span><span class="kc-val" id="kcZone">—</span></div>
+            <div class="kc-row"><span class="kc-label">SIGNAL</span><span class="kc-val" id="kcSignal">—</span></div>
+          </div>
+
+          <div id="signalZone">
+            <div class="signal-block">
+              <div class="sb-title"><svg class="ic s"><use href="#i-trend"/></svg> Signal MT5 / Forex</div>
+              <div class="levels">
+                <div class="lvl"><span>Entrée</span><b id="lvEntry">—</b></div>
+                <div class="lvl tp"><span>Take Profit</span><b id="lvTp">—</b></div>
+                <div class="lvl sl"><span>Stop Loss</span><b id="lvSl">—</b></div>
+                <div class="lvl"><span>Ratio R:R</span><b id="lvRr">—</b></div>
+              </div>
+              <button class="copy-btn" id="copyMt5"><svg class="ic s"><use href="#i-copy"/></svg> Copier le signal MT5</button>
+            </div>
+
+            <div class="signal-block">
+              <div class="sb-title"><svg class="ic s"><use href="#i-phone"/></svg> Pocket Option (binaire)</div>
+              <div class="po-line">
+                <span class="po-chip po-call" id="poChip">—</span>
+                <span>Expiration conseillée : <b id="poExp">—</b></span>
+              </div>
+              <button class="copy-btn" id="copyPo"><svg class="ic s"><use href="#i-copy"/></svg> Copier le signal Pocket Option</button>
+            </div>
+          </div>
+
+          <div id="waitZone" class="signal-block hidden">
+            <div class="sb-title"><svg class="ic s"><use href="#i-pause"/></svg> Pas de trade recommandé</div>
+            <p style="font-size:13.5px;color:var(--muted);line-height:1.65" id="waitText"></p>
+          </div>
+
+          <div class="gauges">
+            <div class="gauge">
+              <div class="g-top"><span><svg class="ic s"><use href="#i-target"/></svg> Probabilité de réussite</span><span class="g-val" id="probVal">—</span></div>
+              <div class="bar"><i id="probBar" style="background:linear-gradient(90deg,#3b82f6,#22d3ee)"></i></div>
+            </div>
+            <div class="gauge">
+              <div class="g-top"><span><svg class="ic s"><use href="#i-shield"/></svg> Confiance de l'analyse</span><span class="g-val" id="confVal">—</span></div>
+              <div class="bar"><i id="confBar" style="background:linear-gradient(90deg,#22d3ee,#34d399)"></i></div>
+            </div>
+          </div>
+
+          <div class="risk-row" id="chipsRow"></div>
+
+          <div class="exp">
+            <p id="resResume"></p>
+            <ul id="resRaisons"></ul>
+          </div>
+
+          <div class="warn">
+            <svg class="ic"><use href="#i-alert"/></svg>
+            <span><b>Aide à la décision, pas un conseil financier.</b> Aucune probabilité n'est une garantie — le trading comporte un risque élevé de perte en capital. N'engage jamais de l'argent que tu ne peux pas perdre.</span>
+          </div>
+
+          <button id="copyAll"><svg class="ic s"><use href="#i-file"/></svg> Copier tout le rapport</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VUE : HISTORIQUE ================= -->
+  <section class="view" id="view-historique">
+    <div class="view-head">
+      <h2><svg class="ic"><use href="#i-clock"/></svg> Historique</h2>
+      <button class="btn small" id="clearHist"><svg class="ic s"><use href="#i-trash"/></svg> Effacer</button>
+    </div>
+    <div id="histList"></div>
+    <div class="card" id="histEmpty">
+      <div class="empty-state">
+        <svg class="ic big" viewBox="0 0 24 24" fill="none" stroke="url(#lg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p>Aucune analyse pour l'instant.<br>Tes 20 dernières analyses apparaîtront ici, cliquables à tout moment.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VUE : RÉGLAGES ================= -->
+  <section class="view" id="view-reglages">
+    <div class="view-head">
+      <h2><svg class="ic"><use href="#i-settings"/></svg> Réglages</h2>
+    </div>
+    <div class="card">
+      <div class="field">
+        <label><svg class="ic s"><use href="#i-zap"/></svg> Fournisseur d'IA</label>
+        <div class="pills" id="providerPills"></div>
+        <div class="hint" id="providerHint"></div>
+      </div>
+
+      <div class="field" id="keyField">
+        <label><svg class="ic s"><use href="#i-key"/></svg> Clé API <span id="keyProvName" style="color:var(--cyan);text-transform:none;letter-spacing:0"></span></label>
+        <div class="key-wrap">
+          <input type="password" id="apiKeyInput" placeholder="Colle ta clé API ici…" autocomplete="off">
+          <button class="btn" id="toggleKey"><svg class="ic s"><use href="#i-eye"/></svg></button>
+        </div>
+      </div>
+
+      <div class="field hidden" id="endpointField">
+        <label><svg class="ic s"><use href="#i-info"/></svg> URL de l'endpoint (compatible OpenAI)</label>
+        <input type="text" id="endpointInput" placeholder="https://models.github.ai/inference/chat/completions">
+      </div>
+
+      <div class="field">
+        <label><svg class="ic s"><use href="#i-settings"/></svg> Modèle</label>
+        <input type="text" id="modelInput">
+      </div>
+
+      <div class="field">
+        <label><svg class="ic s"><use href="#i-shield"/></svg> Profil de trading</label>
+        <select id="profilInput">
+          <option value="prudent">Prudent — setups A+ uniquement, R:R ≥ 1:2</option>
+          <option value="equilibre">Équilibré — bon compromis (recommandé)</option>
+          <option value="agressif">Agressif — plus de signaux, plus de risque</option>
+        </select>
+      </div>
+
+      <button id="saveSettings"><svg class="ic s"><use href="#i-check"/></svg> Enregistrer</button>
+
+      <div class="sec-note">
+        <svg class="ic"><use href="#i-shield"/></svg>
+        <span>Ta clé est stockée <b>uniquement dans ton navigateur</b> (localStorage) et envoyée seulement au fournisseur choisi. Sur mobile, ajoute cette page à ton écran d'accueil pour l'utiliser comme une app.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VUE : GUIDE ================= -->
+  <section class="view" id="view-guide">
+    <div class="view-head">
+      <h2><svg class="ic"><use href="#i-book"/></svg> Guide d'utilisation</h2>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <h2><svg class="ic"><use href="#i-clock"/></svg> Les meilleures heures pour trader</h2>
+      <table class="g-table">
+        <tr><td>🕐 1h – 6h</td><td><b>Session asiatique</b> — elle construit le range (haut + bas) qui servira de niveaux de liquidité pour Londres. On prépare, on ne trade pas (sauf JPY/AUD).</td></tr>
+        <tr><td>🕗 8h – 10h</td><td><b>Ouverture de Londres</b> — EUR et GBP explosent, grosse bougie souvent vers 9h. Excellent créneau, sweeps du range asiatique fréquents.</td></tr>
+        <tr><td>🕞 15h30 – 17h30</td><td><b>Ouverture de New York</b> — <span style="color:var(--green);font-weight:700">le meilleur créneau</span> : Or (XAU/USD), SPX500, Nasdaq, paires USD. Volatilité maximale 15h-16h.</td></tr>
+        <tr><td>⛔ 12h – 14h</td><td><b>Marché mort</b> — zéro volatilité, ranges piégeux. On ne trade pas, on déjeune.</td></tr>
+        <tr><td>⛔ News 4-5★</td><td><b>Zone interdite</b> — pas d'entrée 15 min avant ni après une annonce économique majeure. Vérifie forexfactory.com avant chaque session.</td></tr>
+      </table>
+      <div class="k-rules">Toutes les heures sont en heure de Paris (Cotonou = même fuseau en été). La volatilité est ton amie : trade quand le marché bouge, jamais quand il dort.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <h2><svg class="ic"><use href="#i-camera"/></svg> Ta capture parfaite</h2>
+      <div class="k-step"><span class="k-n">1</span><div><b>Timeframe M1 ou M5</b> pour le scalping (M15 accepté pour du contexte) — c'est le terrain de jeu de Kasper.</div></div>
+      <div class="k-step"><span class="k-n">2</span><div><b>Indicateurs affichés</b> : moyenne mobile <b>200</b> (ligne rouge épaisse), <b>RSI</b>, et le <b>volume</b>. Bonus : l'indicateur gratuit <a href="https://fr.tradingview.com/script/QvTTZyiV/" target="_blank" rel="noopener" style="color:var(--cyan)">Asian Session de Kasper</a> sur TradingView — le bot utilisera ses niveaux.</div></div>
+      <div class="k-step"><span class="k-n">3</span><div><b>60 à 80 bougies visibles</b> + échelle des prix lisible à droite — le bot lit les prix exacts pour ton entrée, TP et SL.</div></div>
+      <div class="k-step"><span class="k-n">4</span><div><b>Colle avec Ctrl+V</b> → Analyser. Le bot enchaîne : flux → liquidité → zone → signal, et note le setup en étoiles.</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <h2><svg class="ic"><use href="#i-target"/></svg> Lire le résultat comme Kasper</h2>
+      <table class="g-table">
+        <tr><td>FLUX</td><td>Structure Dow (HH/HL haussier, LH/LL baissier) + position vs moyenne 200. <b>Neutre = on oublie.</b></td></tr>
+        <tr><td>LIQUIDITÉ</td><td>Equal highs/lows et range asiatique = poches de stop loss. Un <b>sweep</b> (liquidation) récent dans ton sens est le meilleur des contextes — la liquidité l'emporte toujours.</td></tr>
+        <tr><td>ZONE</td><td>Order block + imbalance (critère éliminatoire), BPR, FVG ou OTE Fibonacci. <b>Sans imbalance, Kasper ne rentre jamais.</b></td></tr>
+        <tr><td>SIGNAL</td><td>Englobante (sa préférée) &gt; pinbar de rejet &gt; étoile du matin. Volume en hausse = bonus.</td></tr>
+        <tr><td>★ Étoiles</td><td><b style="color:var(--red)">Moins de 3★</b> = ne pas trader · <b style="color:var(--amber)">3★</b> = setup jouable · <b>4★</b> = beau setup · <b style="color:var(--green)">5★</b> = tir de sniper, le trade qui fait la journée.</td></tr>
+      </table>
+      <div class="k-rules">⛔ Règle d'or : si le bot répond ATTENDRE, tu n'entres pas — "attendre" est aussi une position. Entrée à l'ouverture de la bougie suivante, SL et TP placés immédiatement.</div>
+    </div>
+
+    <div class="card">
+      <h2><svg class="ic"><use href="#i-shield"/></svg> Gestion du risque — non négociable</h2>
+      <div class="k-step"><span class="k-n">1</span><div><b>1 % de ton capital par trade</b> au début (0,5 % si tu découvres). Les gros risques de Kasper (jusqu'à 10 %) sont réservés aux traders déjà rentables en démo depuis 3+ mois.</div></div>
+      <div class="k-step"><span class="k-n">2</span><div><b>3 stop loss d'affilée → tu fermes la plateforme.</b> Pas dans 5 minutes, tout de suite. Le marché sera là demain.</div></div>
+      <div class="k-step"><span class="k-n">3</span><div><b>Objectif journalier atteint (ex +2 %) → écrans éteints.</b> "2 % aujourd'hui et c'est fini" — pas de négociation avec soi-même.</div></div>
+      <div class="k-step"><span class="k-n">4</span><div><b>Jamais de martingale.</b> Doubler la mise après une perte = destruction de compte garantie, surtout en binaire.</div></div>
+      <div class="k-step"><span class="k-n">5</span><div><b>Tiens un journal</b> : actif, heure, setup, étoiles, résultat. Ton winrate et ton profit factor se construisent là, pas dans ta tête.</div></div>
+      <div class="k-step"><span class="k-n">6</span><div><b>Teste en compte DÉMO d'abord</b> — Pocket Option en offre un gratuit. Valide la méthode pendant 2 semaines avant le réel.</div></div>
+      <div class="warn" style="margin-top:14px">
+        <svg class="ic"><use href="#i-alert"/></svg>
+        <span><b>Rappel :</b> Ghost rskIA est une aide à la décision calquée sur la méthode de Kasper, pas un garant de gains. Les options binaires et le trading à effet de levier peuvent causer la perte totale du capital engagé.</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= BARRE DE NAVIGATION BASSE ================= -->
+<nav class="bottomnav">
+  <button class="nav-btn active" data-view="analyser">
+    <svg class="ic"><use href="#i-activity"/></svg>Analyser<span class="ind"></span>
+  </button>
+  <button class="nav-btn" data-view="historique">
+    <svg class="ic"><use href="#i-clock"/></svg>Historique<span class="ind"></span>
+  </button>
+  <button class="nav-btn" data-view="guide">
+    <svg class="ic"><use href="#i-book"/></svg>Guide<span class="ind"></span>
+  </button>
+  <button class="nav-btn" data-view="reglages">
+    <svg class="ic"><use href="#i-settings"/></svg>Réglages<span class="ind"></span>
+  </button>
+</nav>
+
+<div id="toast"></div>
+
+<!-- Clé API locale (optionnelle) : copier key.example.js en key.local.js et y mettre sa clé.
+     key.local.js est ignoré par git — la clé ne quitte jamais ton appareil. -->
+<script src="key.local.js"></script>
+<script>
+/* =====================================================================
+   Ghost rskIA — analyse de captures de graphiques (Pocket Option / MT5)
+   ===================================================================== */
+
+const PROVIDERS = {
+  gemini: {
+    name: "Google Gemini", free: true, model: "gemini-3.6-flash",
+    hint: 'Gratuit, sans carte bancaire. Clé en 2 min sur <a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a> → « Get API key ». ≈ 1 500 analyses/jour gratuites.'
+  },
+  openai: {
+    name: "OpenAI", free: false, model: "gpt-4o",
+    hint: 'Clé sur <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com</a> (crédit requis, min 5 $). gpt-4o ≈ 0,01 $/analyse — mets <b>gpt-4o-mini</b> pour ≈ 0,001 $/analyse. Si ton navigateur bloque (erreur CORS), passe par OpenRouter.'
+  },
+  openrouter: {
+    name: "OpenRouter", free: false, model: "google/gemini-3.6-flash",
+    hint: 'Une seule clé pour tous les modèles (openai/gpt-4o, anthropic/claude-sonnet-4, google/gemini-3.6-flash…). Paiement CB ou <b>crypto</b> sur <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a>.'
+  },
+  groq: {
+    name: "Groq", free: true, model: "meta-llama/llama-4-scout-17b-16e-instruct",
+    hint: 'Gratuit et ultra-rapide (vision Llama 4). Clé sur <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>, sans carte bancaire.'
+  },
+  custom: {
+    name: "Personnalisé", free: false, model: "openai/gpt-4o",
+    hint: 'N\'importe quel endpoint compatible OpenAI. Ex. <b>GitHub Models (gratuit)</b> : URL https://models.github.ai/inference/chat/completions · modèle openai/gpt-4o · clé = token GitHub (github.com/settings/tokens).'
+  }
+};
+
+const $ = id => document.getElementById(id);
+const icon = (name, cls) => '<svg class="ic ' + (cls || '') + '"><use href="#i-' + name + '"/></svg>';
+
+let settings = loadSettings();
+let state = { b64: null, dataUrl: null, lastResult: null };
+
+/* ---------------- Navigation (barre basse) ---------------- */
+function switchView(name){
+  ['analyser','historique','guide','reglages'].forEach(v=>{
+    $('view-' + v).classList.toggle('active', v === name);
+  });
+  document.querySelectorAll('.nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.view === name));
+  if(name === 'reglages'){ renderProviderPills(); fillSettingsForm(); }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.querySelectorAll('.nav-btn').forEach(b=> b.onclick = ()=> switchView(b.dataset.view));
+$('statusPill').onclick = ()=> switchView('reglages');
+
+/* ---------------- Settings ---------------- */
+function loadSettings(){
+  // La clé seed (fichier key.local.js, non versionné) n'est utilisée que si le
+  // navigateur n'a pas déjà des réglages sauvegardés — la clé ne quitte jamais l'appareil.
+  const def = {
+    provider:'gemini',
+    keys: (typeof window !== 'undefined' && window.GHOST_SEED_KEY) ? { gemini: window.GHOST_SEED_KEY } : {},
+    models:{}, endpoint:'', profil:'equilibre'
+  };
+  try {
+    const saved = JSON.parse(localStorage.getItem('tl_settings')||'{}');
+    return Object.assign(def, saved, {
+      keys:   Object.assign({}, def.keys,   saved.keys   || {}),
+      models: Object.assign({}, def.models, saved.models || {})
+    });
+  } catch(e){ return def; }
+}
+function saveSettingsToLS(){ localStorage.setItem('tl_settings', JSON.stringify(settings)); }
+
+function updateKeyStatus(){
+  const key = (settings.keys[settings.provider]||'').trim();
+  const ok = key.length > 8 || settings.provider === 'custom';
+  $('keyDot').classList.toggle('ok', ok);
+  $('keyLabel').textContent = ok ? PROVIDERS[settings.provider].name + ' connecté' : 'Aucune clé API';
+}
+
+function renderProviderPills(){
+  const wrap = $('providerPills'); wrap.innerHTML = '';
+  Object.entries(PROVIDERS).forEach(([id,p])=>{
+    const el = document.createElement('div');
+    el.className = 'pill' + (settings.provider === id ? ' sel' : '');
+    el.innerHTML = p.name + (p.free ? '<span class="tag">GRATUIT</span>' : '');
+    el.onclick = ()=>{
+      settings.keys[settings.provider] = $('apiKeyInput').value.trim();
+      settings.models[settings.provider] = $('modelInput').value.trim();
+      settings.provider = id;
+      fillSettingsForm();
+      renderProviderPills();
+    };
+    wrap.appendChild(el);
+  });
+}
+function fillSettingsForm(){
+  const p = PROVIDERS[settings.provider];
+  $('providerHint').innerHTML = p.hint;
+  $('apiKeyInput').value = settings.keys[settings.provider] || '';
+  $('modelInput').value = settings.models[settings.provider] || p.model;
+  $('keyProvName').textContent = '· ' + p.name;
+  $('endpointField').classList.toggle('hidden', settings.provider !== 'custom');
+  $('endpointInput').value = settings.endpoint || '';
+  $('profilInput').value = settings.profil || 'equilibre';
+}
+$('toggleKey').onclick = ()=>{ const i = $('apiKeyInput'); i.type = i.type === 'password' ? 'text' : 'password'; };
+$('saveSettings').onclick = ()=>{
+  settings.keys[settings.provider] = $('apiKeyInput').value.trim();
+  settings.models[settings.provider] = $('modelInput').value.trim();
+  settings.endpoint = $('endpointInput').value.trim();
+  settings.profil = $('profilInput').value;
+  saveSettingsToLS(); updateKeyStatus();
+  toast('Réglages enregistrés', 'check');
+};
+
+/* ---------------- Toast ---------------- */
+let toastTimer = null;
+function toast(msg, ic, isErr){
+  const t = $('toast');
+  t.innerHTML = (ic ? icon(ic, 's') : '') + '<span>' + msg + '</span>';
+  t.classList.toggle('err', !!isErr);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), isErr ? 5200 : 2600);
+}
+
+/* ---------------- Image : upload / drop / paste ---------------- */
+const dz = $('dropzone');
+dz.onclick = ()=> $('fileInput').click();
+$('fileInput').onchange = e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ''; };
+['dragover','dragenter'].forEach(ev=> dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.add('over'); }));
+['dragleave','drop'].forEach(ev=> dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.remove('over'); }));
+dz.addEventListener('drop', e=>{ const f = e.dataTransfer.files[0]; if(f) handleFile(f); });
+document.addEventListener('paste', e=>{
+  const items = e.clipboardData && e.clipboardData.items;
+  if(!items) return;
+  for(const it of items){ if(it.type.indexOf('image') === 0){ handleFile(it.getAsFile()); break; } }
+});
+$('clearImg').onclick = e=>{ e.stopPropagation(); clearImage(); };
+
+function handleFile(file){
+  if(!file.type.startsWith('image/')){ toast('Ce fichier n\'est pas une image', 'alert', true); return; }
+  downscale(file).then(r=>{
+    state.b64 = r.b64; state.dataUrl = r.dataUrl;
+    $('previewImg').src = r.dataUrl;
+    $('previewWrap').classList.remove('hidden');
+    $('analyzeBtn').disabled = false;
+    dz.style.display = 'none';
+  }).catch(()=> toast('Impossible de lire cette image', 'alert', true));
+}
+function clearImage(){
+  state.b64 = null; state.dataUrl = null;
+  $('previewWrap').classList.add('hidden');
+  $('analyzeBtn').disabled = true;
+  dz.style.display = '';
+}
+function downscale(file){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = ()=>{
+      const max = 1280;
+      const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(img.naturalWidth * k));
+      c.height = Math.max(1, Math.round(img.naturalHeight * k));
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      const dataUrl = c.toDataURL('image/jpeg', 0.82);
+      URL.revokeObjectURL(url);
+      resolve({ dataUrl, b64: dataUrl.split(',')[1] });
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(); };
+    img.src = url;
+  });
+}
+
+/* ---------------- Prompt ---------------- */
+function buildPrompt(){
+  const profils = {
+    prudent:  'Prudent : n\'accepte que les setups 4-5 étoiles parfaitement nettes, R:R minimum 1:2. Au moindre doute, réponds ATTENDRE.',
+    equilibre:'Équilibré : accepte les setups 3 étoiles et plus, R:R minimum 1:1.5.',
+    agressif: 'Agressif : accepte les setups 3 étoiles un peu plus tôt (signal en formation), mais ne viole jamais les critères éliminatoires (imbalance, flux, liquidité).'
+  };
+  return [
+    'Tu es Kasper : trader professionnel, spécialisé sur l\'Or (XAU/USD), les indices US (SPX500, Nasdaq) et les paires majeures du forex. Style Smart Money Concepts (SMC), scalpings sur M1/M5. On te montre une capture de TON graphique : analyse-la avec ton expérience, ta rigueur, et ton intuition de sniper. Un seul tir, la meilleure cible.',
+    '',
+    '═══ TON ANALYSE EN 5 ÉTAPES — DANS CET ORDRE EXACT ═══',
+    '',
+    'ÉTAPE 1 · FLUX (structure) — Détermine la structure Dow : plus hauts et plus bas ascendants (HH/HL) = flux HAUSSIER ; descendants (LH/LL) = flux BAISSIER. Un CHoCH récent (cassure du dernier sommet/creux avec force) signale un retournement possible. Si une moyenne mobile 200 est visible : prix au-dessus = biais haussier, en dessous = biais baissier ; la MM200 sert souvent de support/résistance dynamique. RSI visible : au-dessus de 50 = momentum acheteur, en dessous = vendeur ; >70 surachat, <30 survente. Flux incertain ou range étroit → flux = "neutre" et direction = ATTENDRE.',
+    '',
+    'ÉTAPE 2 · LIQUIDITÉ — elle l\'emporte TOUJOURS sur tout le reste. Repère les equal highs / equal lows (poches de stop loss) et, si visible, le range de la session asiatique (1h-6h) : le marché vient liquider son haut et son bas la plupart du temps. Un sweep de liquidité récent SUIVI d\'un retour rapide dans le range est le contexte d\'entrée premium (le mouvement réel part généralement dans l\'autre sens du sweep). Inversement, si une grosse poche de liquidité se dresse CONTRE le setup avant d\'atteindre le TP, baisse fortement la probabilité ou réponds ATTENDRE. Renseigne le champ "liquidite".',
+    '',
+    'ÉTAPE 3 · ZONE (notée en étoiles) — Candidats de zone, par ordre de force :',
+    '  a) ORDER BLOCK frais (dernière bougie inverse avant l\'impulsion) qui a LIBÉRÉ une imbalance/FVG à sa création.',
+    '  b) BPR : Balanced Price Range = chevauchement (≥ ~30%) d\'une FVG haussière et d\'une FVG baissière → zone d\'équilibre très réactive au retest.',
+    '  c) FVG / imbalance seule (très bonne en continuation de tendance).',
+    '  d) BREAKER BLOCK : ancien order block explosé avec puissance qui change de polarité (support ↔ résistance) — utile pour capter un retournement.',
+    '  e) MM200 ou OTE Fibonacci (retracement 0.62–0.786 de l\'impulsion).',
+    'NOTATION EN ÉTOILES (compte-les dans "etoiles") :',
+    '  ★1 = la zone a libéré une IMBALANCE à sa création — CRITÈRE ÉLIMINATOIRE : pas d\'imbalance nulle part → ATTENDRE.',
+    '  ★2 = pas de poche de liquidité bloquant le chemin vers le TP.',
+    '  ★3 = zone dans le sens du flux (et alignée avec la MM200 si visible).',
+    '  ★4 = sweep de liquidité validé juste avant le retest de la zone.',
+    '  ★5 = entrée en zone OTE 0.62–0.786 ou BPR frais, non mitigé.',
+    '  Rappel : moins de 3 étoiles réelles = direction ATTENDRE.',
+    '',
+    'ÉTAPE 4 · SIGNAL (déclencheur) — Exige une bougie de signal DANS LE SENS du setup, dans la zone, par ordre de préférence (taux de succès) : 1) bougie ENGLOBANTE (ta préférée), 2) pinbar / marteau / étoile filante de rejet contre la zone, 3) étoile du matin ou du soir, 4) CHoCH visible en zoom. Volume en hausse sur le signal = renfort fort. Pas de signal → signal_ok = false → ATTENDRE.',
+    '',
+    'ÉTAPE 5 · PLAN DE TRADE —',
+    '  - Entrée : à l\'ouverture de la bougie qui suit le signal (ordre "marche" au prix actuel) OU "en_attente" avec le prix exact de la zone si le prix n\'y est pas encore.',
+    '  - SL : derrière le sweep ou le bord extérieur de la zone (3-5 pips de buffer sur forex, quelques ticks sur Or/indices) — jamais dans le vide.',
+    '  - TP : la poche de liquidité opposée ou la structure précédente. R:R ≥ 1:2 sur setup 5 étoiles, ≥ 1:1.5 sinon.',
+    '  - Expiration Pocket Option : 1-3 min sur M1, 5 min sur M5.',
+    '  - Probabilité honnête et liée aux étoiles : 3★ ≈ 55-60 %, 4★ ≈ 60-68 %, 5★ ≈ 68-75 %. Jamais au-delà de 78 %, même parfait.',
+    '  - Si la capture montre des bougies énormes et erratiques (annonce éco probable) → ATTENDRE et dis-le.',
+    '',
+    'Profil du trader : ' + (profils[settings.profil] || profils.equilibre),
+    '',
+    'Réponds STRICTEMENT avec un objet JSON (rien d\'autre, pas de markdown, pas de texte avant ou après) contenant exactement ces champs :',
+    '{',
+    '  "actif": "nom de l\'actif si lisible, sinon null",',
+    '  "timeframe": "timeframe détecté (ex: M1, M5), sinon null",',
+    '  "flux": "haussier" | "baissier" | "neutre",',
+    '  "flux_detail": "phrase courte (ex: HH/HL + prix au-dessus de la MM200, CHoCH haussier récent)",',
+    '  "liquidite": "phrase courte sur la liquidité (ex: equal lows sous 1.0840 déjà sweepés — biais haussier) ou null",',
+    '  "etoiles": nombre 1 à 5 (étoiles réellement validées, voir barème),',
+    '  "zone_ok": true | false,',
+    '  "zone_detail": "phrase courte (ex: retest order block M5 + FVG, OTE 0.70)",',
+    '  "signal_ok": true | false,',
+    '  "signal_detail": "phrase courte (ex: englobante haussière sur la zone avec volume)",',
+    '  "direction": "ACHAT" | "VENTE" | "ATTENDRE",',
+    '  "ordre": "marche" | "en_attente",',
+    '  "entree": "prix d\'entrée précis ; si ordre en attente : le prix de déclenchement exact",',
+    '  "tp": "take profit (prix)",',
+    '  "sl": "stop loss (prix)",',
+    '  "ratio_rr": "ex: 1:2",',
+    '  "expiration_po": "1 min, 3 min ou 5 min",',
+    '  "probabilite": nombre 0-100 (barème étoiles),',
+    '  "confiance": nombre 0-100,',
+    '  "resume": "2 à 3 phrases en français, ton direct de trader qui tutoie, citant flux, liquidité, zone et signal (ou ce qui manque), style Kasper : cash, confiant mais jamais vendeur de rêve",',
+    '  "raisons": ["3 à 5 raisons techniques courtes en français"],',
+    '  "risque": "Faible" | "Modéré" | "Élevé"',
+    '}',
+    '',
+    'Règles impératives :',
+    '- Critères éliminatoires (flux neutre, aucune imbalance, prix hors zone, aucun signal, liquidité adverse supérieure) → direction = "ATTENDRE", entree/tp/sl à null, et resume explique exactement ce qui manque et quoi surveiller ensuite.',
+    '- Reste HONNÊTE : un tir de sniper est rare ; la majorité des captures doivent donner 3-4 étoiles ou ATTENDRE.',
+    '- TP et SL doivent s\'appuyer sur des niveaux réellement visibles sur la capture.',
+    '- Si aucun prix n\'est lisible, mets null dans entree/tp/sl et décris les niveaux en mots dans resume.',
+    '- Ne révèle jamais que tu es une IA : parle comme Kasper.'
+  ].join('\n');
+}
+
+/* ---------------- Appels API ---------------- */
+async function callProvider(b64){
+  const p = settings.provider;
+  const prov = PROVIDERS[p];
+  const key = (settings.keys[p] || '').trim();
+  const model = ((settings.models[p] || prov.model) + '').trim() || prov.model;
+  const prompt = buildPrompt();
+  const ctrl = new AbortController();
+  const to = setTimeout(()=> ctrl.abort(), 90000);
+
+  try{
+    if(p === 'gemini'){
+      if(!key) throw new Error('Clé API Gemini manquante — ajoute-la dans Réglages.');
+      const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(key);
+      const res = await fetch(url, {
+        method:'POST', headers:{ 'Content-Type':'application/json' }, signal: ctrl.signal,
+        body: JSON.stringify({
+          contents:[{ role:'user', parts:[ { text: prompt }, { inline_data:{ mime_type:'image/jpeg', data: b64 } } ] }],
+          generationConfig:{ temperature: 0.2, response_mime_type: 'application/json' }
+        })
+      });
+      const j = await res.json().catch(()=>({}));
+      if(!res.ok) throw new Error('Gemini : ' + ((j.error && j.error.message) || ('HTTP ' + res.status)));
+      const parts = ((((j.candidates || [])[0] || {}).content) || {}).parts || [];
+      const txt = parts.filter(x=> !x.thought).map(x=> x.text || '').join('');
+      return extractJson(txt);
+    }
+
+    let url;
+    const headers = { 'Content-Type':'application/json' };
+    if(p === 'openai') url = 'https://api.openai.com/v1/chat/completions';
+    else if(p === 'openrouter'){
+      url = 'https://openrouter.ai/api/v1/chat/completions';
+      headers['HTTP-Referer'] = 'https://ghostrskia.local'; headers['X-Title'] = 'Ghost rskIA';
+    }
+    else if(p === 'groq') url = 'https://api.groq.com/openai/v1/chat/completions';
+    else {
+      url = settings.endpoint.trim();
+      if(!url) throw new Error('Endpoint personnalisé manquant — ajoute-le dans Réglages.');
+    }
+    if(!key && p !== 'custom') throw new Error('Clé API ' + prov.name + ' manquante — ajoute-la dans Réglages.');
+    if(key) headers['Authorization'] = 'Bearer ' + key;
+
+    const body = {
+      model, temperature: 0.2,
+      messages:[{ role:'user', content:[
+        { type:'text', text: prompt },
+        { type:'image_url', image_url:{ url: 'data:image/jpeg;base64,' + b64 } }
+      ]}]
+    };
+    if(p === 'openai' || p === 'openrouter') body.response_format = { type:'json_object' };
+
+    const res = await fetch(url, { method:'POST', headers, signal: ctrl.signal, body: JSON.stringify(body) });
+    const j = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(prov.name + ' : ' + (((j.error) || {}).message || ('HTTP ' + res.status)));
+    if(!j.choices || !j.choices[0]) throw new Error(prov.name + ' : réponse inattendue (vérifie le nom du modèle)');
+    return extractJson(j.choices[0].message.content || '');
+  } finally { clearTimeout(to); }
+}
+
+function extractJson(t){
+  if(!t) throw new Error('Réponse vide de l\'API.');
+  t = t.replace(/```json/gi, '').replace(/```/g, '').trim();
+  const a = t.indexOf('{'), b = t.lastIndexOf('}');
+  if(a < 0 || b <= a) throw new Error('L\'IA n\'a pas renvoyé un résultat exploitable. Réessaie.');
+  return JSON.parse(t.slice(a, b + 1));
+}
+
+/* ---------------- Analyse ---------------- */
+const loadingMsgs = [
+  'Analyse du flux (structure de marché)…','Localisation de la zone de valeur…',
+  'Recherche d\'un signal de rejet…','Vérification EMA 8/21 & volume…',
+  'Construction du plan de trade…','Calcul probabilité & confiance…'
+];
+let loadInterval = null;
+
+function showCard(id){
+  ['idleCard','loadingCard','resultCard'].forEach(c=> $(c).classList.toggle('hidden', c !== id));
+}
+
+async function analyze(){
+  if(!state.b64) return;
+  const key = (settings.keys[settings.provider] || '').trim();
+  if(!key && settings.provider !== 'custom'){
+    toast('Ajoute d\'abord ta clé API dans les réglages', 'alert', true);
+    switchView('reglages'); return;
+  }
+  showCard('loadingCard');
+  let i = 0;
+  $('loadingText').textContent = loadingMsgs[0];
+  loadInterval = setInterval(()=>{ i = (i + 1) % loadingMsgs.length; $('loadingText').textContent = loadingMsgs[i]; }, 2200);
+  $('analyzeBtn').disabled = true;
+
+  try{
+    const data = await callProvider(state.b64);
+    state.lastResult = data;
+    renderResult(data);
+    addToHistory(data);
+    showCard('resultCard');
+  }catch(err){
+    showCard('idleCard');
+    let msg = err.message || 'Erreur inconnue';
+    if(err.name === 'AbortError') msg = 'Délai dépassé (90 s) — vérifie ta connexion et réessaie.';
+    if(String(msg).includes('Failed to fetch')) msg = 'Connexion impossible. Vérifie ta connexion internet, ta clé API, ou change de fournisseur (OpenRouter contourne la plupart des blocages).';
+    toast(msg, 'alert', true);
+  }finally{
+    clearInterval(loadInterval);
+    $('analyzeBtn').disabled = false;
+  }
+}
+$('analyzeBtn').onclick = analyze;
+$('btnRe').onclick = analyze;
+
+/* ---------------- Rendu du résultat ---------------- */
+function clamp(n){ n = Number(n); if(isNaN(n)) return null; return Math.max(0, Math.min(100, Math.round(n))); }
+function confianceLabel(v){ if(v == null) return '—'; if(v >= 75) return 'Élevée'; if(v >= 50) return 'Moyenne'; return 'Faible'; }
+
+function renderResult(d){
+  const dir = (d.direction || 'ATTENDRE').toUpperCase();
+  const badge = $('dirBadge');
+  if(dir === 'ACHAT'){ badge.innerHTML = icon('upright') + ' ACHAT'; badge.className = 'dir-badge dir-buy'; }
+  else if(dir === 'VENTE'){ badge.innerHTML = icon('downright') + ' VENTE'; badge.className = 'dir-badge dir-sell'; }
+  else { badge.innerHTML = icon('pause') + ' ATTENDRE'; badge.className = 'dir-badge dir-wait'; }
+
+  $('resAsset').textContent = d.actif || 'Actif non identifié';
+  $('resMeta').textContent = (d.timeframe ? d.timeframe + ' · ' : '') + new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+
+  // Checklist Flux / Zone / Signal (méthode Kasper)
+  const kc = $('kasperCheck');
+  if(d.flux == null && d.zone_ok == null){ kc.classList.add('hidden'); }
+  else{
+    kc.classList.remove('hidden');
+    const flux = String(d.flux || 'neutre').toLowerCase();
+    const fluxCol = flux === 'haussier' ? 'var(--green)' : flux === 'baissier' ? 'var(--red)' : 'var(--amber)';
+    const fluxIcon = flux === 'haussier' ? 'trend' : flux === 'baissier' ? 'downright' : 'pause';
+    $('kcFlux').innerHTML = '<span style="color:' + fluxCol + ';display:inline-flex;align-items:center;gap:7px;font-weight:800">' + icon(fluxIcon,'s') + ' ' + flux.toUpperCase() + '</span>' + (d.flux_detail ? '<span class="kc-detail">' + d.flux_detail + '</span>' : '');
+    const okMark = ok => ok
+      ? '<span style="color:var(--green);display:inline-flex;align-items:center;gap:7px;font-weight:800">' + icon('check','s') + ' OK</span>'
+      : '<span style="color:var(--red);display:inline-flex;align-items:center;gap:7px;font-weight:800">' + icon('x','s') + ' NON</span>';
+    $('kcZone').innerHTML = okMark(!!d.zone_ok) + '<span class="kc-detail">' + (d.zone_detail || '') + '</span>';
+    $('kcSignal').innerHTML = okMark(!!d.signal_ok) + '<span class="kc-detail">' + (d.signal_detail || '') + '</span>';
+  }
+
+  const waiting = dir === 'ATTENDRE';
+  $('signalZone').classList.toggle('hidden', waiting);
+  $('waitZone').classList.toggle('hidden', !waiting);
+  if(waiting) $('waitText').textContent = d.resume || 'Conditions de marché défavorables pour le moment. Patiente.';
+
+  $('lvEntry').textContent = d.entree || 'Marché';
+  $('lvTp').textContent = d.tp || '—';
+  $('lvSl').textContent = d.sl || '—';
+  $('lvRr').textContent = d.ratio_rr || '—';
+
+  const chip = $('poChip');
+  if(dir === 'VENTE'){ chip.innerHTML = icon('downright') + ' PUT'; chip.className = 'po-chip po-put'; }
+  else { chip.innerHTML = icon('upright') + ' CALL'; chip.className = 'po-chip po-call'; }
+  $('poExp').textContent = d.expiration_po || '5 min';
+
+  // Chips dynamiques : étoiles du setup, risque, timeframe, ordre, liquidité
+  const chips = $('chipsRow'); chips.innerHTML = '';
+  const addChip = html => {
+    const s = document.createElement('span');
+    s.className = 'chip'; s.innerHTML = html; chips.appendChild(s);
+  };
+  const nEtoiles = Math.max(0, Math.min(5, parseInt(d.etoiles) || 0));
+  if(nEtoiles){
+    addChip('<span style="color:#fbbf24;letter-spacing:2px;font-size:13px">' + '★'.repeat(nEtoiles) +
+      '<span style="opacity:.22">' + '★'.repeat(5 - nEtoiles) + '</span></span><b style="font-size:11px">SETUP</b>');
+  }
+  const riskCol = d.risque === 'Faible' ? 'var(--green)' : d.risque === 'Élevé' ? 'var(--red)' : 'var(--amber)';
+  addChip(icon('shield','s') + ' Risque : <b style="color:' + riskCol + '">' + (d.risque || '—') + '</b>');
+  if(d.timeframe) addChip(icon('clock','s') + ' <b>' + d.timeframe + '</b>');
+  addChip(icon('crosshair','s') + ' <b>' + (d.ordre === 'en_attente' ? 'En attente' : 'Marché') + '</b>');
+  if(d.liquidite) addChip(icon('droplet','s') + ' <span style="max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + d.liquidite + '</span>');
+
+  const prob = clamp(d.probabilite), conf = clamp(d.confiance);
+  $('probVal').textContent = prob != null ? prob + ' %' : '—';
+  $('confVal').textContent = conf != null ? confianceLabel(conf) + ' · ' + conf + '/100' : '—';
+  requestAnimationFrame(()=>{
+    $('probBar').style.width = (prob || 0) + '%';
+    $('confBar').style.width = (conf || 0) + '%';
+  });
+
+  $('resResume').textContent = d.resume || '';
+  const ul = $('resRaisons'); ul.innerHTML = '';
+  (Array.isArray(d.raisons) ? d.raisons : []).forEach(r=>{
+    const li = document.createElement('li'); li.textContent = r; ul.appendChild(li);
+  });
+}
+
+/* ---------------- Copier ---------------- */
+function copyText(txt, label){
+  const done = ()=> toast(label + ' copié', 'check');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(()=> fallbackCopy(txt, done));
+  } else fallbackCopy(txt, done);
+}
+function fallbackCopy(txt, done){
+  const ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); done(); }catch(e){ toast('Copie impossible', 'alert', true); }
+  document.body.removeChild(ta);
+}
+
+function fmtMt5(d){
+  const dir = d.direction === 'VENTE' ? '🔴 VENTE' : '🟢 ACHAT';
+  const lignes = ['📊 ' + (d.actif || 'ACTIF') + (d.timeframe ? ' — ' + d.timeframe : '')];
+  lignes.push(dir + (d.ordre === 'en_attente' ? ' (ordre en attente)' : ' (marché)'));
+  lignes.push('➡️ Entrée : ' + (d.entree || 'au marché'));
+  if(d.ordre === 'en_attente') lignes.push('⚠️ N\'entrer QUE si le prix atteint ce niveau');
+  if(d.tp) lignes.push('🎯 TP : ' + d.tp);
+  if(d.sl) lignes.push('🛑 SL : ' + d.sl);
+  if(d.ratio_rr) lignes.push('⚖️ R:R ' + d.ratio_rr);
+  lignes.push('📈 Probabilité : ' + (clamp(d.probabilite) ?? '—') + ' % | Confiance : ' + confianceLabel(clamp(d.confiance)));
+  return lignes.join('\n');
+}
+function fmtPo(d){
+  const dir = d.direction === 'VENTE' ? 'PUT ⬇' : 'CALL ⬆';
+  return '📱 ' + (d.actif || 'ACTIF') + ' | ' + dir + ' | Expiration : ' + (d.expiration_po || '5 min') +
+         ' | Probabilité : ' + (clamp(d.probabilite) ?? '—') + ' % | Confiance : ' + confianceLabel(clamp(d.confiance));
+}
+function fmtAll(d){
+  const wait = (d.direction || '').toUpperCase() === 'ATTENDRE';
+  const head = '⚡ Ghost rskIA — ' + new Date().toLocaleString('fr-FR') + '\n';
+  if(wait) return head + '⏸ ATTENDRE — ' + (d.actif || '') + '\n' + (d.resume || '');
+  const raisons = (Array.isArray(d.raisons) ? d.raisons.map(r=>'• ' + r).join('\n') : '');
+  return head + fmtMt5(d) + '\n\n' + fmtPo(d) + '\n\n💡 ' + (d.resume || '') + '\n' + raisons + '\n⚠️ Risque : ' + (d.risque || '—');
+}
+
+$('copyMt5').onclick = ()=> state.lastResult && copyText(fmtMt5(state.lastResult), 'Signal MT5');
+$('copyPo').onclick  = ()=> state.lastResult && copyText(fmtPo(state.lastResult), 'Signal Pocket Option');
+$('copyAll').onclick = ()=> state.lastResult && copyText(fmtAll(state.lastResult), 'Rapport complet');
+
+/* ---------------- Historique ---------------- */
+function getHist(){ try{ return JSON.parse(localStorage.getItem('tl_history') || '[]'); }catch(e){ return []; } }
+function makeThumb(dataUrl){
+  return new Promise(res=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const w = 120, h = Math.max(1, Math.round(120 * img.naturalHeight / img.naturalWidth));
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const ctx = c.getContext('2d'); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      res(c.toDataURL('image/jpeg', 0.6));
+    };
+    img.onerror = ()=> res(null);
+    img.src = dataUrl;
+  });
+}
+async function addToHistory(d){
+  const hist = getHist();
+  const thumb = await makeThumb(state.dataUrl);
+  hist.unshift({ ts: Date.now(), d, thumb });
+  while(hist.length > 20) hist.pop();
+  try{ localStorage.setItem('tl_history', JSON.stringify(hist)); }catch(e){}
+  renderHistory();
+}
+function renderHistory(){
+  const hist = getHist();
+  $('histEmpty').classList.toggle('hidden', hist.length > 0);
+  const list = $('histList'); list.innerHTML = '';
+  hist.forEach(h=>{
+    const dir = (h.d.direction || 'ATTENDRE').toUpperCase();
+    const item = document.createElement('div');
+    item.className = 'hist-item';
+    const col = dir === 'ACHAT' ? 'var(--green)' : dir === 'VENTE' ? 'var(--red)' : 'var(--amber)';
+    const bg  = dir === 'ACHAT' ? 'rgba(52,211,153,.13)' : dir === 'VENTE' ? 'rgba(251,113,133,.12)' : 'rgba(251,191,36,.12)';
+    item.innerHTML =
+      (h.thumb ? '<img src="' + h.thumb + '" alt="">' : '') +
+      '<div class="h-info"><div class="h-asset">' + (h.d.actif || 'Actif ?') + (h.d.timeframe ? ' · ' + h.d.timeframe : '') + '</div>' +
+      '<div class="h-time">' + new Date(h.ts).toLocaleString('fr-FR') + '</div></div>' +
+      '<span class="h-dir" style="color:' + col + ';background:' + bg + '">' + dir + '</span>' +
+      '<span class="h-prob">' + (clamp(h.d.probabilite) ?? '—') + '%</span>';
+    item.onclick = ()=>{
+      state.lastResult = h.d;
+      renderResult(h.d);
+      switchView('analyser');
+      showCard('resultCard');
+    };
+    list.appendChild(item);
+  });
+}
+$('clearHist').onclick = ()=>{ localStorage.removeItem('tl_history'); renderHistory(); };
+
+/* ---------------- Init ---------------- */
+updateKeyStatus();
+renderHistory();
+</script>
+</body>
+</html>
