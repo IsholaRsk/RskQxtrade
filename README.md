@@ -33,7 +33,7 @@ Ouvre `index.html` dans ton navigateur. C'est une app 100 % autonome (aucun buil
 2. Dans l'app → onglet **Réglages** → colle la clé → **Enregistrer**
 3. *(Option)* Pour la pré-charger : copie `key.example.js` en `key.local.js` et insère ta clé — ce fichier est **ignoré par git** et ne quitte jamais ton appareil.
 
-> 🔒 Ta clé est utilisée uniquement pour appeler le fournisseur d'IA depuis ton navigateur. Elle n'est jamais envoyée ailleurs ni stockée en ligne.
+> 🔒 **Aucune clé dans le code, par design** : chaque utilisateur saisit sa propre clé API dans l'onglet Réglages de l'app (stockée uniquement dans son navigateur, jamais envoyée ailleurs qu'au fournisseur d'IA choisi).
 
 ## 📖 Guide complet
 
@@ -47,7 +47,6 @@ Voir **[GUIDE.md](GUIDE.md)** — les meilleures heures de session (Londres 8h-1
 | `GUIDE.md` | Guide d'utilisation complet (heures, indicateurs, risque) |
 | `key.example.js` | Modèle de pré-configuration de la clé API |
 | `assets/` | Images de démo |
-| `rskqxtrade complete.zip` | 🗄️ Archive v1 (ancienne version : frontend + backend FastAPI + bot Telegram Quotex) |
 
 ## ☑️ Checklist avant chaque trade
 
