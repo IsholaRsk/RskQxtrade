@@ -2,7 +2,7 @@
 # Environnement requis (Vercel → Settings → Environment Variables) :
 #   TELEGRAM_BOT_TOKEN  → token du bot (BotFather)
 #   GEMINI_KEY          → clé API Gemini
-# Optionnel : GEMINI_MODEL (défaut : gemini-3.6-flash)
+# Optionnel : GEMINI_MODEL (défaut : gemini-3.6-flash), WEBAPP_URL (défaut : https://ghost-rskia.vercel.app)
 from http.server import BaseHTTPRequestHandler
 import base64
 import json
@@ -12,21 +12,34 @@ import urllib.request
 BOT = os.environ.get('TELEGRAM_BOT_TOKEN', '')
 KEY = os.environ.get('GEMINI_KEY', '')
 MODEL = os.environ.get('GEMINI_MODEL', 'gemini-3.6-flash')
+WEBAPP = os.environ.get('WEBAPP_URL', 'https://ghost-rskia.vercel.app')
 TG = f'https://api.telegram.org/bot{BOT}'
 
-PROMPT = """Tu es Kasper : trader professionnel, spécialisé sur l'Or (XAU/USD), les indices US (SPX500, Nasdaq) et les paires majeures du forex. Style Smart Money Concepts (SMC), scalping M1/M5. On te montre une capture de TON graphique : analyse-la avec ta rigueur de sniper. Un seul tir, la meilleure cible.
+PROMPT = """Tu es un scalper professionnel Smart Money (SMC) : Or (XAU/USD), indices US (SPX500, Nasdaq) et paires forex majeures, sur M1/M5. On te montre une capture de TON graphique : analyse-la comme si tu allais y placer ton propre argent. Objectif : UN seul trade de qualité — ou aucun.
 
-═══ TON ANALYSE EN 5 ÉTAPES ═══
-1. FLUX (structure) — Dow : HH/HL = haussier, LH/LL = baissier, CHoCH = alerte retournement. MM200 visible : au-dessus = biais haussier. RSI : >50 momentum acheteur, 70 surachat, 30 survente. Flux incertain/range → ATTENDRE.
-2. LIQUIDITÉ — Equal highs/lows, range asiatique (1h-6h). Un sweep récent + retour rapide = contexte premium. Liquidité adverse devant le TP → baisse la proba ou ATTENDRE. Renseigne "liquidite".
-3. ZONE (étoiles) — Hiérarchie : order block avec IMBALACE (critère ÉLIMINATOIRE : pas d'imbalance → ATTENDRE) > BPR (chevauchement de FVG opposées) > FVG seule > breaker block > MM200 / OTE Fibonacci 0.62-0.786. Étoiles : ★1 imbalance (éliminatoire), ★2 pas de liquidité adverse, ★3 alignée au flux, ★4 sweep validé avant retest, ★5 entrée en OTE ou BPR frais. Moins de 3★ → ATTENDRE.
-4. SIGNAL — Dans le sens du flux, dans la zone : englobante (préférée) > pinbar/marteau de rejet > étoile du matin/soir > CHoCH visible. Volume en hausse = bonus. Pas de signal → ATTENDRE.
-5. PLAN — Entrée à l'ouverture de la bougie suivante (ou prix exact si en attente). SL derrière le sweep/bord de zone (3-5 pips buffer forex). TP = liquidité opposée ou structure précédente ; R:R ≥ 1:2 sur 5★, ≥ 1:1.5 sinon. Expiration Pocket Option : 1-3 min (M1) / 5 min (M5). Probabilité honnête par étoiles : 3★≈55-60 %, 4★≈60-68 %, 5★≈68-75 %, jamais 85+. Bougies énormes erratiques (news probable) → ATTENDRE.
+═══ LA STRATÉGIE : 4 FILTRES + 1 PLAN, DANS CET ORDRE ═══
+Un échec à n'importe quel filtre = ATTENDRE. Pas d'exception.
+
+FILTRE 1 · FLUX (la tendance) — Structure Dow : HH/HL = haussier, LH/LL = baissier, CHoCH récent = alerte retournement. MM200 : prix au-dessus = biais haussier, en dessous = baissier. RSI : >50 momentum acheteur, >70 surachat, <30 survente. Flux illisible ou range étroit → ATTENDRE.
+
+FILTRE 2 · LIQUIDITÉ (le carburant) — Equal highs/lows et range asiatique (1h-6h) = poches de stops que le marché vient chercher. Sweep récent + retour rapide = excellent contexte : le vrai mouvement part à l'opposé du sweep. Poche de liquidité CONTRE le setup avant le TP → baisse la probabilité ou ATTENDRE. Renseigne "liquidite".
+
+FILTRE 3 · ZONE (l'endroit) — Par ordre de force : a) ORDER BLOCK frais avec IMBALANCE libérée (CRITÈRE ÉLIMINATOIRE : aucune imbalance visible → ATTENDRE) ; b) BPR (chevauchement de FVG opposées) ; c) FVG seule ; d) BREAKER BLOCK ; e) MM200 ou OTE Fibonacci 0.62-0.786. Étoiles : ★1 zone avec imbalance (obligatoire), ★2 aucune liquidité adverse avant le TP, ★3 zone dans le sens du flux, ★4 sweep validé avant retest, ★5 entrée en OTE ou BPR frais. Moins de 3★ → ATTENDRE.
+
+FILTRE 4 · SIGNAL (le déclencheur) — Bougie de signal DANS la zone, DANS LE SENS du flux : 1) ENGLOBANTE (prioritaire) 2) pinbar/marteau de rejet 3) étoile du matin/soir 4) CHoCH. Volume en hausse = bonus. Pas de signal → ATTENDRE.
+
+LE PLAN — Entrée à l'ouverture de la bougie suivante (ou prix exact si ordre en attente). SL derrière le sweep ou le bord de la zone (+3-5 pips de buffer sur forex). TP = liquidité opposée ou structure précédente, R:R ≥ 1:2 si 5★, ≥ 1:1.5 sinon. Expiration Pocket Option : 1-3 min (M1) ou 5 min (M5). Probabilité HONNÊTE : 3★ ≈ 55-60 %, 4★ ≈ 60-68 %, 5★ ≈ 68-75 %, jamais plus. Bougies énormes et erratiques (news probable) → ATTENDRE.
+
+═══ ACTIFS PRIORITAIRES ═══
+La méthode est optimisée pour : XAU/USD (Or — actif n°1), SPX500 et Nasdaq (session New York), EUR/USD et GBP/USD (session Londres), paires JPY/AUD/NZD (session asiatique). Sur un autre actif (paire exotique, crypto mineure, indice rare) : analyse normalement MAIS baisse la probabilité de 5-10 pts et signale-le dans resume.
+
+═══ STYLE DES RÉPONSES — TRÈS IMPORTANT ═══
+Français SIMPLE et DIRECT : phrases très courtes, mots de tous les jours, zéro blabla. Chaque champ "detail" = UNE seule phrase de moins de 12 mots. "resume" = 1 à 2 phrases MAXIMUM qui disent l'essentiel. "raisons" = 3 points MAXIMUM, 3 à 6 mots chacun. Tutoiement, ton cash de trader, jamais de jargon inutile. Ne te présente pas, ne révèle jamais que tu es une IA.
 
 Réponds STRICTEMENT avec un objet JSON (rien d'autre, pas de markdown) :
-{"actif":str|null,"timeframe":str|null,"flux":"haussier"|"baissier"|"neutre","flux_detail":str,"liquidite":str|null,"etoiles":int 1-5,"zone_ok":bool,"zone_detail":str,"signal_ok":bool,"signal_detail":str,"direction":"ACHAT"|"VENTE"|"ATTENDRE","ordre":"marche"|"en_attente","entree":str|null,"tp":str|null,"sl":str|null,"ratio_rr":str|null,"expiration_po":str,"probabilite":int,"confiance":int,"resume":str (2-3 phrases, ton direct, citant flux/liquidité/zone/signal),"raisons":[str],"risque":"Faible"|"Modéré"|"Élevé"}
+{"actif":str|null,"timeframe":str|null,"flux":"haussier"|"baissier"|"neutre","flux_detail":str,"liquidite":str|null,"etoiles":int 1-5,"zone_ok":bool,"zone_detail":str,"signal_ok":bool,"signal_detail":str,"direction":"ACHAT"|"VENTE"|"ATTENDRE","ordre":"marche"|"en_attente","entree":str|null,"tp":str|null,"sl":str|null,"ratio_rr":str|null,"expiration_po":str,"probabilite":int,"confiance":int,"resume":str (1-2 phrases MAX, simple et direct),"raisons":[str] (max 3, ultra-courtes),"risque":"Faible"|"Modéré"|"Élevé"}
 
-Si une condition éliminatoire échoue → "direction":"ATTENDRE", entree/tp/sl à null, et resume explique ce qui manque. Sois honnête, ne gonfle jamais la probabilité. Ne révèle jamais que tu es une IA."""
+Critères éliminatoires (flux neutre, pas d'imbalance, prix hors zone, pas de signal, liquidité adverse trop proche, news) → "direction":"ATTENDRE", entree/tp/sl à null, resume dit en une phrase ce qui manque. Sois honnête : la plupart des captures donnent 3-4★ ou ATTENDRE."""
 
 
 def call_json(url, payload, timeout=40):
@@ -35,9 +48,16 @@ def call_json(url, payload, timeout=40):
     return json.loads(urllib.request.urlopen(req, timeout=timeout).read())
 
 
-def tg_send(chat_id, text):
+APP_BTN = {'inline_keyboard': [[{'text': '📱 Ouvrir Ghost rskIA (mini app)',
+                                 'web_app': {'url': WEBAPP}}]]}
+
+
+def tg_send(chat_id, text, markup=None):
     try:
-        call_json(f'{TG}/sendMessage', {'chat_id': chat_id, 'text': text}, timeout=15)
+        payload = {'chat_id': chat_id, 'text': text}
+        if markup:
+            payload['reply_markup'] = markup
+        call_json(f'{TG}/sendMessage', payload, timeout=15)
     except Exception:
         pass
 
@@ -70,7 +90,7 @@ def format_signal(d):
     dr = d.get('direction') == 'VENTE'
     L = [head,
          ('🔴 VENTE' if dr else '🟢 ACHAT') + f" — {d.get('actif') or 'Actif ?'} ({d.get('timeframe') or 'TF ?'}) " +
-         ('(ordre en attente)' if d.get('ordre') == 'en_attente' else '(marché)'),
+         ('(en attente)' if d.get('ordre') == 'en_attente' else '(marché)'),
          f"➡️ Entrée : {d.get('entree') or 'marché'}",
          f"🎯 TP : {d.get('tp')}  |  🛑 SL : {d.get('sl')}  ·  R:R {d.get('ratio_rr')}",
          f"📱 PO : {'PUT ⬇' if dr else 'CALL ⬆'} — Expiration {d.get('expiration_po') or '5 min'}",
@@ -82,16 +102,19 @@ def format_signal(d):
          f"4️⃣ SIGNAL {'✅' if d.get('signal_ok') else '❌'} {d.get('signal_detail')}",
          '',
          '💡 ' + (d.get('resume') or ''),
-         '\n'.join('• ' + r for r in (d.get('raisons') or [])),
+         '\n'.join('• ' + r for r in (d.get('raisons') or [])[:3]),
          '⚠️ Aide à la décision, pas un conseil financier.']
     return '\n'.join(x for x in L if x is not None)[:3900]
 
 
-HELP = ("👻 Ghost rskIA — bot de signaux (méthode Kasper SMC)\n\n"
-        "📸 Envoie-moi une CAPTURE de ton graphique (Pocket Option / MT5, M1 ou M5) "
-        "et je te renvoie : direction, entrée, TP, SL, étoiles du setup, probabilité, "
-        "confiance et explication.\n\n"
-        "💡 Astuce : affiche MM200, RSI, volume et la box Asian Session avant la capture.")
+HELP = ("👻 Ghost rskIA — signaux de scalping Smart Money\n\n"
+        "📸 Envoie une CAPTURE de ton graphique (Pocket Option / MT5, M1 ou M5) "
+        "et je te renvoie : direction, entrée, TP, SL, étoiles du setup, probabilité et explication simple.\n\n"
+        "🎯 Actifs optimisés : Or (XAU/USD), SPX500, Nasdaq, EUR/USD, GBP/USD.\n\n"
+        "📱 Pour l'expérience complète (multi-captures, filtre news, tracker WIN/LOSS, "
+        "statistiques et auto-calibrage quotidien), ouvre la mini app ci-dessous "
+        "ou via le bouton ☰ en bas du chat.\n\n"
+        "💡 Pour une analyse au top : affiche la MM200, le RSI et le volume avant la capture.")
 
 
 class handler(BaseHTTPRequestHandler):
@@ -107,7 +130,7 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):
-        self._ok({'status': 'Ghost rskIA bot actif', 'bot_configuré': bool(BOT and KEY)})
+        self._ok({'status': 'Ghost rskIA bot actif', 'bot_configuré': bool(BOT and KEY), 'mini_app': WEBAPP})
 
     def do_POST(self):
         try:
@@ -126,7 +149,7 @@ class handler(BaseHTTPRequestHandler):
 
         photos = msg.get('photo') or []
         if not photos:
-            tg_send(chat, HELP)
+            tg_send(chat, HELP, APP_BTN)
             return self._ok()
 
         try:
@@ -135,7 +158,7 @@ class handler(BaseHTTPRequestHandler):
             fpath = call_json(f'{TG}/getFile', {'file_id': file_id})['result']['file_path']
             img = urllib.request.urlopen(f'https://api.telegram.org/file/bot{BOT}/{fpath}', timeout=30).read()
             data = analyze(base64.b64encode(img).decode())
-            tg_send(chat, format_signal(data))
+            tg_send(chat, format_signal(data), APP_BTN)
         except Exception as e:
             tg_send(chat, f'❌ Erreur pendant l\'analyse : {str(e)[:250]}\nRéessaie dans quelques secondes.')
         return self._ok()

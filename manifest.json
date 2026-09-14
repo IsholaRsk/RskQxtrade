@@ -1,0 +1,19 @@
+{
+  "name": "Ghost rskIA — Signaux Smart Money",
+  "short_name": "Ghost rskIA",
+  "description": "Analyse tes captures de graphiques (Pocket Option / MT5) et reçois un plan de trade complet : direction, entrée, TP, SL, probabilité.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#030509",
+  "theme_color": "#030509",
+  "icons": [
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

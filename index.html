@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ghost rskIA — Analyse de graphiques</title>
+<meta name="theme-color" content="#030509">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ghost rskIA">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="assets/icon-512.png">
+<link rel="apple-touch-icon" href="assets/icon-512.png">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{
   --bg:#030509;
@@ -300,7 +309,7 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 #toast.err{border-color:rgba(251,113,133,.55)}
 
-/* ---------- Stratégie Kasper ---------- */
+/* ---------- Vérification stratégie ---------- */
 .k-title{font-size:13.5px;font-weight:700;margin-bottom:13px}
 .k-title b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .k-step{display:flex;gap:11px;align-items:flex-start;margin-bottom:11px;font-size:12.5px;color:var(--muted);line-height:1.55}
@@ -308,7 +317,7 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
 .k-n{width:21px;height:21px;border-radius:7px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:var(--cyan);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
 .k-rules{margin-top:14px;padding-top:12px;border-top:1px solid var(--stroke);font-size:11px;color:var(--muted);line-height:1.75}
 
-.kasper-check{background:var(--glass2);border:1px solid var(--stroke);border-radius:16px;padding:13px 15px;margin-bottom:14px}
+.strat-check{background:var(--glass2);border:1px solid var(--stroke);border-radius:16px;padding:13px 15px;margin-bottom:14px}
 .kc-row{display:flex;align-items:center;gap:11px;padding:5px 0;flex-wrap:wrap}
 .kc-label{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--muted);width:54px;flex:none}
 .kc-val{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:13px;font-weight:600}
@@ -374,6 +383,9 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
 .r-dot{width:23px;height:23px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex:none}
 .r-dot.WIN{background:rgba(52,211,153,.15);color:var(--green)}
 .r-dot.LOSS{background:rgba(251,113,133,.14);color:var(--red)}
+/* ---------- Auto-calibrage ---------- */
+.learn-row{font-size:.83rem;color:var(--muted);padding:3px 0;line-height:1.45}
+.learn-bilan{margin-top:8px;font-size:.81rem;color:var(--cyan);line-height:1.45;font-style:italic}
 </style>
 </head>
 <body>
@@ -452,18 +464,19 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
             <div><svg class="ic s"><use href="#i-camera"/></svg><span>Capture ton graphique Pocket Option ou MT5 (bougies + indicateurs bien visibles)</span></div>
             <div><svg class="ic s"><use href="#i-clipboard"/></svg><span>Colle-la ici — <kbd>Ctrl</kbd>+<kbd>V</kbd> sur PC, galerie ou photo sur mobile</span></div>
             <div><svg class="ic s"><use href="#i-zap"/></svg><span>L'IA détecte tendance, supports/résistances, chandeliers &amp; indicateurs</span></div>
-            <div><svg class="ic s"><use href="#i-copy"/></svg><span>Signal validé uniquement si les 3 conditions Kasper sont réunies</span></div>
+            <div><svg class="ic s"><use href="#i-copy"/></svg><span>Signal validé uniquement si les 4 filtres de la stratégie passent</span></div>
           </div>
         </div>
 
         <div class="card" style="margin-top:18px">
           <h2><svg class="ic"><use href="#i-zap"/></svg> Stratégie active</h2>
-          <div class="k-title">Méthode <b>Kasper · SMC complet</b></div>
+          <div class="k-title">Méthode <b>Smart Money · SMC</b></div>
           <div class="k-step"><span class="k-n">1</span><div><b>FLUX</b> · structure Dow (HH/HL ou LH/LL) + moyenne mobile 200 — on ne trade que dans son sens</div></div>
           <div class="k-step"><span class="k-n">2</span><div><b>LIQUIDITÉ</b> · sweep des equal highs/lows ou du range asiatique — la liquidité l'emporte toujours</div></div>
           <div class="k-step"><span class="k-n">3</span><div><b>ZONE</b> · order block avec imbalance (critère éliminatoire), BPR, FVG, OTE Fibonacci 0.62–0.786 — notée en étoiles</div></div>
           <div class="k-step"><span class="k-n">4</span><div><b>SIGNAL</b> · englobante &gt; pinbar de rejet &gt; étoile du matin — volume en renfort, sinon on n'entre pas</div></div>
           <div class="k-rules">Entrée à la bougie suivante · SL derrière le sweep/la zone · R:R ≥ 1:2 sur setup 5★ · min. 3★ pour trader · pas d'entrée autour d'une news 4–5★</div>
+          <div class="k-rules" style="margin-top:8px">🎯 Actifs optimisés : <b>Or (XAU/USD)</b> · SPX500 · Nasdaq · <b>EUR/USD</b> · <b>GBP/USD</b> · paires JPY/AUD/NZD — sur un actif exotique, la probabilité est réduite automatiquement.</div>
         </div>
       </div>
 
@@ -495,7 +508,7 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
             <button class="btn small" id="btnRe"><svg class="ic s"><use href="#i-refresh"/></svg> Ré-analyser</button>
           </div>
 
-          <div class="kasper-check hidden" id="kasperCheck">
+          <div class="strat-check hidden" id="stratCheck">
             <div class="kc-row"><span class="kc-label">FLUX</span><span class="kc-val" id="kcFlux">—</span></div>
             <div class="kc-row"><span class="kc-label">ZONE</span><span class="kc-val" id="kcZone">—</span></div>
             <div class="kc-row"><span class="kc-label">SIGNAL</span><span class="kc-val" id="kcSignal">—</span></div>
@@ -651,19 +664,19 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
 
     <div class="card" style="margin-bottom:16px">
       <h2><svg class="ic"><use href="#i-camera"/></svg> Ta capture parfaite</h2>
-      <div class="k-step"><span class="k-n">1</span><div><b>Timeframe M1 ou M5</b> pour le scalping (M15 accepté pour du contexte) — c'est le terrain de jeu de Kasper.</div></div>
-      <div class="k-step"><span class="k-n">2</span><div><b>Indicateurs affichés</b> : moyenne mobile <b>200</b> (ligne rouge épaisse), <b>RSI</b>, et le <b>volume</b>. Bonus : l'indicateur gratuit <a href="https://fr.tradingview.com/script/QvTTZyiV/" target="_blank" rel="noopener" style="color:var(--cyan)">Asian Session de Kasper</a> sur TradingView — le bot utilisera ses niveaux.</div></div>
+      <div class="k-step"><span class="k-n">1</span><div><b>Timeframe M1 ou M5</b> pour le scalping (M15 accepté pour du contexte) — le terrain de jeu du scalping.</div></div>
+      <div class="k-step"><span class="k-n">2</span><div><b>Indicateurs affichés</b> : moyenne mobile <b>200</b> (ligne rouge épaisse), <b>RSI</b>, et le <b>volume</b>. Bonus : l'indicateur gratuit <a href="https://fr.tradingview.com/script/QvTTZyiV/" target="_blank" rel="noopener" style="color:var(--cyan)">Asian Session</a> sur TradingView — le bot utilisera ses niveaux.</div></div>
       <div class="k-step"><span class="k-n">3</span><div><b>60 à 80 bougies visibles</b> + échelle des prix lisible à droite — le bot lit les prix exacts pour ton entrée, TP et SL.</div></div>
       <div class="k-step"><span class="k-n">4</span><div><b>Colle avec Ctrl+V</b> → Analyser. Le bot enchaîne : flux → liquidité → zone → signal, et note le setup en étoiles.</div></div>
     </div>
 
     <div class="card" style="margin-bottom:16px">
-      <h2><svg class="ic"><use href="#i-target"/></svg> Lire le résultat comme Kasper</h2>
+      <h2><svg class="ic"><use href="#i-target"/></svg> Lire le résultat comme un pro</h2>
       <table class="g-table">
         <tr><td>FLUX</td><td>Structure Dow (HH/HL haussier, LH/LL baissier) + position vs moyenne 200. <b>Neutre = on oublie.</b></td></tr>
         <tr><td>LIQUIDITÉ</td><td>Equal highs/lows et range asiatique = poches de stop loss. Un <b>sweep</b> (liquidation) récent dans ton sens est le meilleur des contextes — la liquidité l'emporte toujours.</td></tr>
-        <tr><td>ZONE</td><td>Order block + imbalance (critère éliminatoire), BPR, FVG ou OTE Fibonacci. <b>Sans imbalance, Kasper ne rentre jamais.</b></td></tr>
-        <tr><td>SIGNAL</td><td>Englobante (sa préférée) &gt; pinbar de rejet &gt; étoile du matin. Volume en hausse = bonus.</td></tr>
+        <tr><td>ZONE</td><td>Order block + imbalance (critère éliminatoire), BPR, FVG ou OTE Fibonacci. <b>Sans imbalance, on ne rentre jamais.</b></td></tr>
+        <tr><td>SIGNAL</td><td>Englobante (prioritaire) &gt; pinbar de rejet &gt; étoile du matin. Volume en hausse = bonus.</td></tr>
         <tr><td>★ Étoiles</td><td><b style="color:var(--red)">Moins de 3★</b> = ne pas trader · <b style="color:var(--amber)">3★</b> = setup jouable · <b>4★</b> = beau setup · <b style="color:var(--green)">5★</b> = tir de sniper, le trade qui fait la journée.</td></tr>
       </table>
       <div class="k-rules">⛔ Règle d'or : si le bot répond ATTENDRE, tu n'entres pas — "attendre" est aussi une position. Entrée à l'ouverture de la bougie suivante, SL et TP placés immédiatement.</div>
@@ -671,7 +684,7 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
 
     <div class="card">
       <h2><svg class="ic"><use href="#i-shield"/></svg> Gestion du risque — non négociable</h2>
-      <div class="k-step"><span class="k-n">1</span><div><b>1 % de ton capital par trade</b> au début (0,5 % si tu découvres). Les gros risques de Kasper (jusqu'à 10 %) sont réservés aux traders déjà rentables en démo depuis 3+ mois.</div></div>
+      <div class="k-step"><span class="k-n">1</span><div><b>1 % de ton capital par trade</b> au début (0,5 % si tu découvres). Les risques élevés (jusqu'à 10 %) sont réservés aux traders déjà rentables en démo depuis 3+ mois.</div></div>
       <div class="k-step"><span class="k-n">2</span><div><b>3 stop loss d'affilée → tu fermes la plateforme.</b> Pas dans 5 minutes, tout de suite. Le marché sera là demain.</div></div>
       <div class="k-step"><span class="k-n">3</span><div><b>Objectif journalier atteint (ex +2 %) → écrans éteints.</b> "2 % aujourd'hui et c'est fini" — pas de négociation avec soi-même.</div></div>
       <div class="k-step"><span class="k-n">4</span><div><b>Jamais de martingale.</b> Doubler la mise après une perte = destruction de compte garantie, surtout en binaire.</div></div>
@@ -679,7 +692,7 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
       <div class="k-step"><span class="k-n">6</span><div><b>Teste en compte DÉMO d'abord</b> — Pocket Option en offre un gratuit. Valide la méthode pendant 2 semaines avant le réel.</div></div>
       <div class="warn" style="margin-top:14px">
         <svg class="ic"><use href="#i-alert"/></svg>
-        <span><b>Rappel :</b> Ghost rskIA est une aide à la décision calquée sur la méthode de Kasper, pas un garant de gains. Les options binaires et le trading à effet de levier peuvent causer la perte totale du capital engagé.</span>
+        <span><b>Rappel :</b> Ghost rskIA est une aide à la décision basée sur une stratégie Smart Money éprouvée, pas un garant de gains. Les options binaires et le trading à effet de levier peuvent causer la perte totale du capital engagé.</span>
       </div>
     </div>
   </section>
@@ -709,7 +722,7 @@ main{max-width:1060px;margin:0 auto;padding:14px 18px 0}
 <script>
 /* =====================================================================
    Ghost rskIA — analyse de captures de graphiques (Pocket Option / MT5)
-   Méthode Kasper SMC · Multi-captures · Filtre news · Tracker WIN/LOSS
+   Stratégie Smart Money · Multi-captures · Filtre news · Tracker WIN/LOSS
    ===================================================================== */
 
 const PROVIDERS = {
@@ -954,7 +967,7 @@ function renderNewsBanner(){
     if(red.length){
       const t = [...new Set(red.map(e => e.cur + ' — ' + e.title + ' (' + fmtRelMin(e.ts) + ')'))].slice(0, 2).join('<br>');
       el.className = 'news-banner blocked';
-      el.innerHTML = icon('alert','s') + '<span><b>NEWS MAJEURE — NE PAS TRADER</b><br>' + t + '<br><span class="nb-sub">Règle Kasper : 15 min avant et après une annonce, on reste dehors.</span></span>';
+      el.innerHTML = icon('alert','s') + '<span><b>NEWS MAJEURE — NE PAS TRADER</b><br>' + t + '<br><span class="nb-sub">Règle d\'or : 15 min avant et après une annonce, on reste dehors.</span></span>';
     } else if(watch.length){
       const t = [...new Set(watch.map(e => e.cur + ' — ' + e.title + ' (' + fmtRelMin(e.ts) + ')'))].slice(0, 2).join(' · ');
       el.className = 'news-banner watch';
@@ -972,46 +985,60 @@ function assetNewsAlerts(d){
   return highWindow(20 * 60 * 1000, 30 * 60 * 1000).filter(e => curs.includes(e.cur) || e.cur === 'USD');
 }
 
-/* ---------------- Prompt (Kasper SMC) ---------------- */
+/* ---------------- Prompt (stratégie SMC) ---------------- */
 function buildPrompt(){
   const profils = {
-    prudent:  'Prudent : n\'accepte que les setups 4-5 étoiles parfaitement nettes, R:R minimum 1:2. Au moindre doute, réponds ATTENDRE.',
+    prudent:  'Prudent : n\'accepte que les setups 4-5 étoiles, R:R minimum 1:2. Au moindre doute → ATTENDRE.',
     equilibre:'Équilibré : accepte les setups 3 étoiles et plus, R:R minimum 1:1.5.',
-    agressif: 'Agressif : accepte les setups 3 étoiles un peu plus tôt (signal en formation), mais ne viole jamais les critères éliminatoires (imbalance, flux, liquidité, news).'
+    agressif: 'Agressif : accepte les setups 3 étoiles un peu plus tôt (signal en formation), sans jamais violer les critères éliminatoires.'
   };
   const multi = state.images.length > 1;
   const L = [
-    'Tu es Kasper : trader professionnel, spécialisé sur l\'Or (XAU/USD), les indices US (SPX500, Nasdaq) et les paires majeures du forex. Style Smart Money Concepts (SMC), scalpings sur M1/M5. On te montre ' + (multi ? 'PLUSIEURS captures de TON' : 'une capture de TON') + ' écran : analyse ' + (multi ? 'les images EN ENSEMBLE' : 'la') + ' avec ton expérience, ta rigueur, et ton instinct de sniper. Un seul tir, la meilleure cible.',
+    'Tu es un scalper professionnel Smart Money (SMC) : Or (XAU/USD), indices US (SPX500, Nasdaq) et paires forex majeures, sur M1/M5. On te montre ' + (multi ? 'PLUSIEURS captures de TON graphique' : 'une capture de TON graphique') + ' : analyse-' + (multi ? 'les EN ENSEMBLE' : 'la') + ' comme si tu allais y placer ton propre argent. Objectif : UN seul trade de qualité — ou aucun.',
     '',
     multi
-      ? '═══ CONFLUENCE MULTI-TIMEFRAMES ═══ Image 1 = timeframe d\'EXÉCUTION (M1/M5 : la ZONE et le SIGNAL se lisent ici). Image 2 = CONTEXTE SUPÉRIEUR (M15/H1 : le FLUX et la LIQUIDITÉ majeure se lisent ICI en priorité)' + (state.images.length > 2 ? ' ; Image 3 = contexte additionnel' : '') + '. Règle absolue : le flux du contexte supérieur doit être ALIGNÉ avec le sens du trade sur l\'image d\'exécution — contexte opposé = ATTENDRE, contexte neutre = baisse d\'une étoile et de la probabilité.'
-      : '═══ TIMEFRAME UNIQUE ═══ Déduis le contexte supérieur de la structure visible sur ce seul graphique, et reste exigeant sur la clarté.',
+      ? '═══ CONFLUENCE MULTI-TIMEFRAMES ═══ Image 1 = EXÉCUTION (M1/M5 : ZONE et SIGNAL). Image 2 = CONTEXTE (M15/H1 : FLUX et LIQUIDITÉ majeure, en priorité)' + (state.images.length > 2 ? ' ; Image 3 = contexte bonus' : '') + '. Règle absolue : le flux du contexte doit être ALIGNÉ avec le trade d\'exécution — contexte opposé = ATTENDRE, contexte neutre = -1 étoile et probabilité réduite.'
+      : '═══ TIMEFRAME UNIQUE ═══ Déduis le contexte supérieur de la structure visible et reste exigeant sur la clarté.',
     '',
-    '═══ TON ANALYSE EN 5 ÉTAPES — DANS CET ORDRE EXACT ═══',
+    '═══ LA STRATÉGIE : 4 FILTRES + 1 PLAN, DANS CET ORDRE ═══',
+    'Un échec à n\'importe quel filtre = ATTENDRE. Pas d\'exception.',
     '',
-    'ÉTAPE 1 · FLUX (structure) — Structure Dow : HH/HL = flux HAUSSIER ; LH/LL = flux BAISSIER. CHoCH récent = alerte retournement. MM200 visible : prix au-dessus = biais haussier (elle sert souvent de support/résistance dynamique). RSI : >50 momentum acheteur, >70 surachat, <30 survente. Flux incertain ou range étroit → flux = "neutre" → ATTENDRE.',
+    'FILTRE 1 · FLUX (la tendance) — Structure Dow : HH/HL = haussier, LH/LL = baissier, CHoCH récent = alerte retournement. MM200 : prix au-dessus = biais haussier, en dessous = baissier. RSI : >50 momentum acheteur, >70 surachat, <30 survente. Flux illisible ou range étroit → ATTENDRE.',
     '',
-    'ÉTAPE 2 · LIQUIDITÉ — elle l\'emporte TOUJOURS. Repère les equal highs / equal lows (poches de stops) et le range de la session asiatique (1h-6h) si visible : le marché liquide son haut et son bas la plupart du temps. Sweep récent + retour rapide = contexte d\'entrée premium (le vrai mouvement part généralement à l\'opposé du sweep). Grosse poche de liquidité CONTRE le setup avant le TP → baisse fortement la probabilité ou ATTENDRE. Renseigne "liquidite".',
+    'FILTRE 2 · LIQUIDITÉ (le carburant) — Equal highs/lows et range asiatique (1h-6h) = poches de stops que le marché vient chercher. Sweep récent + retour rapide = excellent contexte : le vrai mouvement part à l\'opposé du sweep. Poche de liquidité CONTRE le setup avant le TP → baisse la probabilité ou ATTENDRE. Renseigne "liquidite".',
     '',
-    'ÉTAPE 3 · ZONE (étoiles) — Candidats par ordre de force : a) ORDER BLOCK frais (dernière bougie inverse avant l\'impulsion) ayant LIBÉRÉ une imbalance/FVG ; b) BPR : chevauchement (≥ ~30 %) d\'une FVG haussière et baissière ; c) FVG / imbalance seule ; d) BREAKER BLOCK (ancien order block explosé avec puissance, changement de polarité) ; e) MM200 ou OTE Fibonacci (0.62–0.786 de l\'impulsion).',
-    'NOTATION : ★1 = la zone a libéré une IMBALANCE (CRITÈRE ÉLIMINATOIRE : aucune imbalance visible → ATTENDRE) · ★2 = pas de poche de liquidité adverse sur le chemin du TP · ★3 = zone dans le sens du flux (+ MM200 alignée) · ★4 = sweep de liquidité validé juste avant le retest · ★5 = entrée en OTE 0.62–0.786 ou BPR frais non mitigé. Moins de 3 étoiles réelles → ATTENDRE.',
+    'FILTRE 3 · ZONE (l\'endroit) — Par ordre de force : a) ORDER BLOCK frais avec IMBALANCE libérée (CRITÈRE ÉLIMINATOIRE : aucune imbalance visible → ATTENDRE) ; b) BPR : chevauchement (≥30 %) d\'une FVG haussière et baissière ; c) FVG / imbalance seule ; d) BREAKER BLOCK (order block explosé, changement de polarité) ; e) MM200 ou OTE Fibonacci 0.62-0.786.',
+    'NOTATION ÉTOILES : ★1 zone avec imbalance (obligatoire) · ★2 aucune liquidité adverse avant le TP · ★3 zone dans le sens du flux (+ MM200 alignée) · ★4 sweep validé juste avant le retest · ★5 entrée en OTE 0.62-0.786 ou BPR frais. Moins de 3★ → ATTENDRE.',
     '',
-    'ÉTAPE 4 · SIGNAL — Bougie de signal DANS LE SENS du flux, dans la zone, par ordre de préférence : 1) ENGLOBANTE (ta préférée), 2) pinbar/marteau/étoile filante de rejet, 3) étoile du matin ou du soir, 4) CHoCH visible en zoom. Volume en hausse = renfort. Pas de signal → signal_ok = false → ATTENDRE.',
+    'FILTRE 4 · SIGNAL (le déclencheur) — Bougie de signal DANS la zone, DANS LE SENS du flux, par ordre de préférence : 1) ENGLOBANTE 2) pinbar/marteau de rejet 3) étoile du matin/soir 4) CHoCH visible. Volume en hausse = bonus. Pas de signal → signal_ok = false → ATTENDRE.',
     '',
-    'ÉTAPE 5 · PLAN — Entrée à l\'ouverture de la bougie suivante ("marche" au prix actuel) OU "en_attente" avec le prix exact de la zone si le prix n\'y est pas encore. SL : derrière le sweep ou le bord extérieur de la zone (3-5 pips buffer sur forex). TP : poche de liquidité opposée ou structure précédente ; R:R ≥ 1:2 sur setup 5★, ≥ 1:1.5 sinon. Expiration Pocket Option : 1-3 min sur M1, 5 min sur M5. Probabilité honnête par étoiles : 3★ ≈ 55-60 %, 4★ ≈ 60-68 %, 5★ ≈ 68-75 %, jamais 85+.',
+    'LE PLAN — Entrée : "marche" à l\'ouverture de la bougie suivante, ou "en_attente" au prix exact de la zone si le prix n\'y est pas encore. SL : derrière le sweep ou le bord extérieur de la zone (+3-5 pips de buffer sur forex). TP : liquidité opposée ou structure précédente — R:R ≥ 1:2 si 5★, ≥ 1:1.5 sinon. Expiration Pocket Option : 1-3 min (M1) / 5 min (M5). Probabilité HONNÊTE : 3★ ≈ 55-60 %, 4★ ≈ 60-68 %, 5★ ≈ 68-75 %, jamais plus. Bougies énormes et erratiques (news probable) → ATTENDRE.',
+    '',
+    '═══ ACTIFS PRIORITAIRES ═══ La méthode est optimisée pour : XAU/USD (Or — actif n°1), SPX500 et Nasdaq (session New York), EUR/USD et GBP/USD (session Londres), paires JPY/AUD/NZD (session asiatique). Sur un autre actif (paire exotique, crypto mineure, indice rare) : analyse normalement MAIS baisse la probabilité de 5-10 pts et signale-le dans resume.',
+    '',
+    '═══ STYLE DES RÉPONSES — TRÈS IMPORTANT ═══',
+    'Français SIMPLE et DIRECT : phrases très courtes, mots de tous les jours, zéro blabla. Chaque champ "detail" = UNE seule phrase de moins de 12 mots. "resume" = 1 à 2 phrases MAXIMUM qui disent l\'essentiel (ex: "Flux haussier propre, lows sweepés, retest OB + FVG. J\'achète, SL sous le sweep."). "raisons" = 3 points MAXIMUM, 3 à 6 mots chacun. Tutoiement, ton cash de trader, jamais de jargon inutile. Ne révèle jamais que tu es une IA.',
     '',
     'Profil du trader : ' + (profils[settings.profil] || profils.equilibre),
     ''
   ];
+  // Leçons de la revue quotidienne des pertes (calibrage proba/confiance UNIQUEMENT)
+  try{
+    const rv = JSON.parse(localStorage.getItem('tl_lessons') || 'null');
+    if(rv && rv.lecons && rv.lecons.length){
+      L.push('═══ AUTO-CALIBRAGE (issu de tes pertes passées) ═══ Revue du ' + rv.date + ' sur ' + rv.nb + ' trades journaliés : ' + rv.lecons.join(' · ') + '. RÈGLE STRICTE : ces paramètres NE modifient NI la stratégie NI ses critères éliminatoires — ils servent UNIQUEMENT à calibrer probabilite et confiance. Si le setup actuel partage ces conditions, applique des pénalités réalistes ; sinon ignore-les.');
+      L.push('');
+    }
+  }catch(e){}
   // Contexte news réel (calendrier injecté)
   if(state.news.loaded && !state.news.unavailable){
     if(isWeekendUTC()){
-      L.push('CONTEXTE NEWS : on est le week-end — symbole probablement OTC : les annonces économiques ne s\'appliquent pas.');
+      L.push('CONTEXTE NEWS : week-end — symbole probablement OTC : les annonces économiques ne s\'appliquent pas.');
     } else {
       const red = highWindow(20 * 60 * 1000, 90 * 60 * 1000);
       if(red.length){
         const t = red.map(e => e.cur + ' "' + e.title + '" (' + fmtRelMin(e.ts) + ')').join(' ; ');
-        L.push('CONTEXTE NEWS (données RÉELLES du calendrier) : annonces haute importance imminentes ou récentes : ' + t + '. RÈGLE ABSOLUE DE KASPER : jamais d\'entrée 15 min avant/après une annonce majeure concernant l\'actif (le USD touche l\'Or, les indices US et toutes les paires contenant USD). Si l\'actif de la capture est concerné → direction = "ATTENDRE", et explique dans resume que c\'est à cause de l\'annonce (tu peux décrire le setup à surveiller APRÈS la news).');
+        L.push('CONTEXTE NEWS (calendrier RÉEL) : annonces haute importance imminentes ou récentes : ' + t + '. RÈGLE ABSOLUE : jamais d\'entrée 15 min avant/après une annonce majeure concernant l\'actif (le USD touche l\'Or, les indices US et toutes les paires USD). Si l\'actif est concerné → direction = "ATTENDRE", et resume l\'explique en une phrase simple (tu peux décrire le setup à surveiller APRÈS la news).');
       } else {
         L.push('CONTEXTE NEWS : aucune annonce haute importance dans les ±90 minutes (calendrier réel vérifié).');
       }
@@ -1024,13 +1051,13 @@ function buildPrompt(){
     '  "actif": "nom de l\'actif si lisible, sinon null",',
     '  "timeframe": "timeframe d\'exécution détecté (ex: M1, M5), sinon null",',
     '  "flux": "haussier" | "baissier" | "neutre",',
-    '  "flux_detail": "phrase courte (ex: HH/HL en M15 + prix au-dessus MM200)",',
-    '  "liquidite": "phrase courte (ex: equal lows sweeps à 1.0840 — biais haussier) ou null",',
+    '  "flux_detail": "UNE phrase < 12 mots (ex: HH/HL + prix au-dessus MM200)",',
+    '  "liquidite": "UNE phrase < 12 mots (ex: equal lows sweepés à 1.0840) ou null",',
     '  "etoiles": nombre 1 à 5 (étoiles réellement validées),',
     '  "zone_ok": true | false,',
-    '  "zone_detail": "phrase courte (ex: retest order block M5 + FVG, OTE 0.70)",',
+    '  "zone_detail": "UNE phrase < 12 mots (ex: retest OB M5 + FVG, OTE 0.70)",',
     '  "signal_ok": true | false,',
-    '  "signal_detail": "phrase courte (ex: englobante haussière sur la zone avec volume)",',
+    '  "signal_detail": "UNE phrase < 12 mots (ex: englobante haussière sur la zone)",',
     '  "direction": "ACHAT" | "VENTE" | "ATTENDRE",',
     '  "ordre": "marche" | "en_attente",',
     '  "entree": "prix d\'entrée précis ; si en attente : le prix exact de déclenchement",',
@@ -1040,16 +1067,15 @@ function buildPrompt(){
     '  "expiration_po": "1 min, 3 min ou 5 min",',
     '  "probabilite": nombre 0-100 (barème étoiles),',
     '  "confiance": nombre 0-100,',
-    '  "resume": "2 à 3 phrases en français, ton direct de trader qui tutoie, citant flux, liquidité, zone et signal (ou ce qui manque), style Kasper : cash, confiant mais jamais vendeur de rêve",',
-    '  "raisons": ["3 à 5 raisons techniques courtes en français"],',
+    '  "resume": "1 à 2 phrases MAX, français simple et direct",',
+    '  "raisons": ["2-3 raisons ultra-courtes (3-6 mots)"],',
     '  "risque": "Faible" | "Modéré" | "Élevé"',
     '}',
     '',
     'Règles impératives :',
-    '- Critères éliminatoires (flux neutre, aucune imbalance, prix hors zone, aucun signal, liquidité adverse supérieure, news majeure concernée) → direction = "ATTENDRE", entree/tp/sl à null, resume explique ce qui manque et quoi surveiller.',
-    '- Reste HONNÊTE : un tir de sniper est rare ; la majorité des captures doivent donner 3-4 étoiles ou ATTENDRE.',
-    '- TP et SL sur des niveaux réellement visibles. Si aucun prix lisible → null dans entree/tp/sl et niveaux décrits en mots dans resume.',
-    '- Ne révèle jamais que tu es une IA : parle comme Kasper.'
+    '- Critères éliminatoires (flux neutre, aucune imbalance, prix hors zone, aucun signal, liquidité adverse trop proche, news majeure concernée) → direction = "ATTENDRE", entree/tp/sl à null, resume dit en une phrase ce qui manque.',
+    '- Reste HONNÊTE : un trade parfait est rare ; la majorité des captures donnent 3-4 étoiles ou ATTENDRE.',
+    '- TP et SL sur des niveaux réellement visibles. Aucun prix lisible → null dans entree/tp/sl et niveaux décrits en mots dans resume.'
   );
   return L.join('\n');
 }
@@ -1163,7 +1189,7 @@ function postNewsCheck(d){
   const w = $('newsWarn');
   if(!alerts.length){ w.classList.add('hidden'); return; }
   const t = alerts.map(e => '<b>' + e.cur + ' — ' + e.title + '</b> (' + fmtRelMin(e.ts) + ')').join('<br>');
-  $('newsWarnTxt').innerHTML = '<b>ANNOUNCE MAJEURE SUR CET ACTIF</b><br>' + t + '<br>Fenêtre interdite Kasper : même si le setup est beau, <b>reste dehors</b> et reviens après la news.';
+  $('newsWarnTxt').innerHTML = '<b>ANNOUNCE MAJEURE SUR CET ACTIF</b><br>' + t + '<br>Fenêtre interdite : même si le setup est beau, <b>reste dehors</b> et reviens après la news.';
   w.classList.remove('hidden');
 }
 
@@ -1177,7 +1203,7 @@ function renderResult(d){
   $('resAsset').textContent = d.actif || 'Actif non identifié';
   $('resMeta').textContent = (d.timeframe ? d.timeframe + ' · ' : '') + new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
 
-  const kc = $('kasperCheck');
+  const kc = $('stratCheck');
   if(d.flux == null && d.zone_ok == null){ kc.classList.add('hidden'); }
   else{
     kc.classList.remove('hidden');
@@ -1350,11 +1376,30 @@ function statRow(label, w, l, color){
     '<span class="s-bar"><i style="width:' + wr + '%;background:' + (color || 'var(--grad)') + '"></i></span>' +
     '<span class="s-val">' + wr + '% <span style="opacity:.55">(' + n + ')</span></span></div>';
 }
+function learnCardHtml(){
+  const rv = getLessons();
+  let h = '<div class="stat-card"><h3>🧠 Auto-calibrage IA</h3>';
+  if(rv && rv.lecons && rv.lecons.length){
+    h += '<div class="learn-row" style="color:var(--cyan)">Revue du ' + rv.date + ' · ' + rv.nb + ' trades analysés</div>' +
+      rv.lecons.map(l => '<div class="learn-row">• ' + l + '</div>').join('') +
+      (rv.bilan ? '<div class="learn-bilan">« ' + rv.bilan + ' »</div>' : '');
+  } else {
+    h += '<div class="learn-row">Chaque jour à minuit, l\'IA passe en revue les pertes du journal, identifie le paramètre influent de chaque perte, et garde ces paramètres en tête pour affiner ses calculs de probabilité et de confiance — sans jamais modifier la stratégie.</div>';
+  }
+  h += '<button class="btn small" id="btnReviewNow" style="margin-top:10px">↻ Lancer une revue maintenant</button></div>';
+  return h;
+}
+function bindReviewBtn(){ const br = $('btnReviewNow'); if(br) br.onclick = ()=> dailyReview(true); }
 function renderStats(){
   const wrap = $('statsWrap');
+  if(!wrap) return;
   const st = computeStats(getHist());
-  if(!st){ wrap.innerHTML = ''; wrap.classList.remove('stats-wrap'); return; }
   wrap.classList.add('stats-wrap');
+  if(!st){
+    wrap.innerHTML = '<div class="stats-grid">' + learnCardHtml() + '</div>';
+    bindReviewBtn();
+    return;
+  }
   const wr = Math.round(100 * st.w / st.n);
   const pf = st.rLoss > 0 ? (st.rWin / st.rLoss) : st.rWin;
   const net = st.rWin - st.rLoss;
@@ -1373,8 +1418,10 @@ function renderStats(){
   html += '<div class="stat-card"><h3>📈 Par direction</h3>' + statRow('ACHAT', st.dir.ACHAT.w, st.dir.ACHAT.l, 'linear-gradient(90deg,#34d399,#22d3ee)') + statRow('VENTE', st.dir.VENTE.w, st.dir.VENTE.l, 'linear-gradient(90deg,#fb7185,#fbbf24)') + '</div>';
   const assets = Object.entries(st.assets).sort((a, b) => (b[1].w + b[1].l) - (a[1].w + a[1].l)).slice(0, 4);
   html += '<div class="stat-card"><h3>🥇 Par actif</h3>' + assets.map(([a, v]) => statRow(a, v.w, v.l, 'linear-gradient(90deg,#3b82f6,#22d3ee)')).join('') + '</div>';
+  html += learnCardHtml();
   html += '</div>';
   wrap.innerHTML = html;
+  bindReviewBtn();
 }
 
 /* ---------------- Historique ---------------- */
@@ -1406,11 +1453,103 @@ function renderHistory(){
 }
 $('clearHist').onclick = ()=>{ localStorage.removeItem('tl_history'); state.selectedTs = null; renderHistory(); };
 
+/* ---------------- Auto-apprentissage quotidien (revue des pertes) ---------------- */
+function getLessons(){ try{ return JSON.parse(localStorage.getItem('tl_lessons') || 'null'); }catch(e){ return null; } }
+function reviewDueToday(){ return (localStorage.getItem('tl_last_review') || '') !== new Date().toDateString(); }
+
+async function callTextAI(text){
+  const p = settings.provider || 'gemini';
+  const prov = PROVIDERS[p] || PROVIDERS.gemini;
+  const key = (((settings.keys || {})[p]) || '').trim();
+  const model = ((((settings.models || {})[p]) || prov.model || '') + '').trim();
+  if(p !== 'custom' && !key) throw new Error('no-key');
+  const ctrl = new AbortController();
+  const to = setTimeout(()=> ctrl.abort(), 90000);
+  try{
+    if(p === 'gemini'){
+      const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model || 'gemini-3.6-flash') + ':generateContent?key=' + encodeURIComponent(key);
+      const res = await fetch(url, { method:'POST', headers:{ 'Content-Type':'application/json' }, signal: ctrl.signal,
+        body: JSON.stringify({ contents:[{ role:'user', parts:[{ text:text }] }], generationConfig:{ temperature:0.2, response_mime_type:'application/json' } }) });
+      const j = await res.json().catch(()=>({}));
+      if(!res.ok) throw new Error('gemini-http');
+      const parts = ((((j.candidates || [])[0] || {}).content) || {}).parts || [];
+      return parts.filter(x=> !x.thought).map(x=> x.text || '').join('');
+    }
+    let url = '';
+    const headers = { 'Content-Type':'application/json' };
+    if(p === 'openai') url = 'https://api.openai.com/v1/chat/completions';
+    else if(p === 'openrouter'){ url = 'https://openrouter.ai/api/v1/chat/completions'; headers['HTTP-Referer'] = location.origin; headers['X-Title'] = 'Ghost rskIA'; }
+    else if(p === 'groq') url = 'https://api.groq.com/openai/v1/chat/completions';
+    else { url = (settings.endpoint || '').trim(); if(!url) throw new Error('no-endpoint'); }
+    if(key) headers['Authorization'] = 'Bearer ' + key;
+    const body = { model: model, temperature: 0.2, messages:[{ role:'user', content:text }] };
+    if(p === 'openai' || p === 'openrouter') body.response_format = { type:'json_object' };
+    const res = await fetch(url, { method:'POST', headers: headers, signal: ctrl.signal, body: JSON.stringify(body) });
+    const j = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error('http');
+    return (((j.choices || [])[0] || {}).message || {}).content || '';
+  } finally { clearTimeout(to); }
+}
+
+async function dailyReview(force){
+  try{
+    if(!force && !reviewDueToday()) return;
+    const all = getHist().filter(h => h.result === 'WIN' || h.result === 'LOSS');
+    const pending = all.filter(h => !h.reviewed);
+    if(!pending.length){ if(force) toast('Aucun nouveau trade à passer en revue', 'check'); return; }
+    if(all.length < 3 && !force) return;
+    if(force) toast('Revue du journal en cours…', 'alert');
+    const sample = all.slice(0, 40).map(h => ({
+      actif: h.d.actif || null, tf: h.d.timeframe || null, direction: h.d.direction || null,
+      etoiles: h.d.etoiles || null, rr: h.d.ratio_rr || null,
+      proba: h.d.probabilite || null, confiance: h.d.confiance || null,
+      zone_ok: h.d.zone_ok, signal_ok: h.d.signal_ok,
+      heure: new Date(h.ts).getHours(), resultat: h.result,
+      resume: String(h.d.resume || '').slice(0, 120)
+    }));
+    const prompt = [
+      'Tu es le moteur d\'auto-calibrage statistique de Ghost rskIA (IA de scalping Smart Money).',
+      'Voici SON journal récent : les signaux qu\'elle a donnés + le résultat réel (WIN/LOSS) marqué par le trader :',
+      JSON.stringify(sample),
+      '',
+      'MISSION — purement statistique, la stratégie est INTANGIBLE :',
+      '1. Pour chaque LOSS, identifie la cause technique la plus probable en croisant les paramètres (actif, heure de session, étoiles, direction, R:R, proba/confiance annoncées, zone_ok, signal_ok).',
+      '2. Déduis-en 3 à 6 RÈGLES DE CALIBRAGE ultra-courtes (max 12 mots chacune), au format "si <condition> → proba -X pts" ou "méfiance : <condition>".',
+      '3. Il est INTERDIT de remettre en cause les critères de la stratégie (flux, liquidité, zone, signal, imbalance). Ces règles servent UNIQUEMENT à rendre les prochaines probabilités et confiances plus réalistes.',
+      '4. Si aucun pattern clair ne se dégage, dis-le honnêtement dans bilan et reste prudent dans les règles.',
+      'Réponds STRICTEMENT en JSON : {"lecons": ["..."], "bilan": "une phrase honnête"}'
+    ].join('\n');
+    const out = await callTextAI(prompt);
+    const a = out.indexOf('{'), b = out.lastIndexOf('}');
+    if(a < 0 || b < 0) throw new Error('parse');
+    const data = JSON.parse(out.slice(a, b + 1));
+    const lecons = (data.lecons || []).map(s => String(s).replace(/\s+/g, ' ').trim().slice(0, 150)).filter(Boolean).slice(0, 6);
+    const hist2 = getHist();
+    hist2.forEach(h => { if(h.result === 'WIN' || h.result === 'LOSS') h.reviewed = true; });
+    saveHist(hist2);
+    localStorage.setItem('tl_last_review', new Date().toDateString());
+    if(lecons.length){
+      localStorage.setItem('tl_lessons', JSON.stringify({ date: new Date().toLocaleDateString('fr-FR'), nb: all.length, lecons: lecons, bilan: String(data.bilan || '').slice(0, 220) }));
+      toast(lecons.length + ' leçons intégrées au calibrage des probabilités', 'check');
+    } else if(force){ toast('Revue terminée — aucun pattern exploitable pour le moment', 'check'); }
+    renderStats();
+  }catch(e){
+    if(force) toast('Revue impossible (clé API ou modèle indisponible)', 'alert');
+  }
+}
+
 /* ---------------- Init ---------------- */
 updateKeyStatus();
 renderHistory();
 fetchNews();
 setInterval(()=> fetchNews(), 5 * 60 * 1000);
+
+/* ---------------- Mini App Telegram (webview) ---------------- */
+try{ if(window.Telegram && window.Telegram.WebApp){ const tg = window.Telegram.WebApp; tg.ready(); tg.expand(); if(tg.setHeaderColor) tg.setHeaderColor('#030509'); if(tg.setBackgroundColor) tg.setBackgroundColor('#030509'); } }catch(e){}
+
+/* ---------------- Revue quotidienne des pertes (minuit) ---------------- */
+dailyReview();                       // rattrapage si pas faite aujourd'hui
+setInterval(dailyReview, 60000);     // se déclenche juste après minuit si l'app est ouverte
 </script>
 </body>
 </html>

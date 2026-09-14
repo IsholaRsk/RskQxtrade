@@ -1,5 +1,5 @@
 # 👻 Ghost rskIA — Guide d'utilisation complet
-### Méthode Kasper intégrée · Scalping Pocket Option / MT5
+### Stratégie Smart Money intégrée · Scalping Pocket Option / MT5
 
 ---
 
@@ -20,26 +20,26 @@
 
 ## 📸 2. La capture d'écran parfaite
 
-1. **Timeframe M1 ou M5** (le terrain de scalping) — M15 accepté pour le contexte.
+1. **Timeframe M1 ou M5** (le terrain du scalping) — M15 accepté pour le contexte.
 2. **Indicateurs affichés** :
    - Moyenne mobile **200** (rouge, épaisse) — support/résistance + biais de tendance
    - **RSI** (>50 = momentum acheteur · 70 surachat · 30 survente)
-   - **Volume** (valide les cassures, détecte les pièges)
-   - 🎁 Bonus : l'indicateur gratuit **Asian Session de Kasper** → [tradingview.com/script/QvTTZyiV](https://fr.tradingview.com/script/QvTTZyiV/)
+   - **Volume** (valide les cassures)
+   - 🎁 Bonus : l'indicateur gratuit **Asian Session** → [tradingview.com/script/QvTTZyiV](https://fr.tradingview.com/script/QvTTZyiV/)
 3. **60 à 80 bougies visibles** + échelle des prix lisible à droite (le bot lit les prix pour ton entrée/TP/SL).
 4. Colle avec **Ctrl+V** → **Analyser**.
 
 ---
 
-## 🧠 3. Comment le bot analyse (la méthode Kasper en 5 étapes)
+## 🧠 3. Comment le bot analyse (4 filtres + 1 plan)
 
-| Étape | Ce que le bot vérifie | Règle |
+| Filtre | Ce que le bot vérifie | Règle |
 |---|---|---|
 | **1. FLUX** | Structure Dow (HH/HL ou LH/LL), CHoCH, position vs MM200, RSI | Neutre = on oublie. On ne trade QUE dans le sens du flux. |
-| **2. LIQUIDITÉ** | Equal highs/lows, range asiatique = poches de stop loss | **La liquidité l'emporte toujours.** Un sweep récent dans ton sens = contexte premium. |
+| **2. LIQUIDITÉ** | Equal highs/lows, range asiatique = poches de stop loss | Un sweep récent dans ton sens = contexte premium. |
 | **3. ZONE** | Order block + imbalance > BPR > FVG > breaker > MM200 / OTE 0.62-0.786 | ⚠️ **Pas d'imbalance = pas de trade** (critère éliminatoire). |
-| **4. SIGNAL** | Englobante (sa préférée) > pinbar > étoile du matin | Volume en hausse = bonus. Pas de signal = on attend. |
-| **5. PLAN** | Entrée bougie suivante · SL derrière le sweep/zone · TP = liquidité opposée | R:R ≥ 1:2 sur 5★ · ≥ 1:1.5 sinon. |
+| **4. SIGNAL** | Englobante (prioritaire) > pinbar > étoile du matin | Volume en hausse = bonus. Pas de signal = on attend. |
+| **PLAN** | Entrée bougie suivante · SL derrière le sweep/zone · TP = liquidité opposée | R:R ≥ 1:2 sur 5★ · ≥ 1:1.5 sinon. |
 
 ### ⭐ La notation en étoiles
 
@@ -53,7 +53,7 @@
 
 ### Le plan de trade reçu
 
-- **Direction** : ACHAT / VENTE / ATTENDRE (jamais de trade sur ATTENDRE — "attendre est aussi une position")
+- **Direction** : ACHAT / VENTE / ATTENDRE (jamais de trade sur ATTENDRE — « attendre est aussi une position »)
 - **Entrée** : à l'ouverture de la bougie suivante, OU en attente au prix exact indiqué
 - **SL / TP** placés **immédiatement** après l'entrée
 - **Pocket Option** : expiration 1-3 min (M1) ou 5 min (M5)
@@ -62,18 +62,18 @@
 
 ## 🛡️ 4. Gestion du risque — NON NÉGOCIABLE
 
-1. **1 % de ton capital par trade** au début (0,5 % si tu découvres). Les gros risques de Kasper (jusqu'à 10 %) sont réservés aux traders rentables en démo depuis 3+ mois.
+1. **1 % de ton capital par trade** au début (0,5 % si tu découvres). Les risques élevés (jusqu'à 10 %) sont réservés aux traders rentables en démo depuis 3+ mois.
 2. **3 stop loss d'affilée → tu fermes la plateforme.** Pas dans 5 minutes. Tout de suite.
-3. **Objectif journalier atteint (ex +2 %) → écrans éteints.** *"2 % aujourd'hui et c'est fini."*
+3. **Objectif journalier atteint (ex +2 %) → écrans éteints.** *« 2 % aujourd'hui et c'est fini. »*
 4. **Jamais de martingale.** Doubler après une perte = compte cramé, surtout en binaire.
 5. **Tiens un journal** : actif, heure, setup, étoiles, résultat → calcule ton winrate et profit factor chaque semaine.
 6. **Compte DÉMO d'abord** (Pocket Option en offre un gratuit) — 2 semaines de validation avant le réel.
 
 ---
 
-## 🥇 5. Les actifs préférés de Kasper
+## 🥇 5. Les actifs prioritaires
 
-- **OR (XAU/USD)** — son terrain de jeu n°1 (session NY)
+- **OR (XAU/USD)** — le terrain de jeu n°1 (session NY)
 - **SPX500 / Nasdaq** — ouverture US
 - **EUR/USD, GBP/USD** — session Londres
 - **JPY, AUD, NZD** — session asiatique
@@ -81,9 +81,15 @@
 
 ---
 
+## 🧠 6. Auto-calibrage quotidien (apprentissage des pertes)
+
+Chaque jour à **minuit**, l'IA passe en revue tous les trades que tu as marqués **WIN/LOSS** dans le journal. Elle identifie **la raison de chaque perte** (actif, heure, étoiles, direction, R:R, proba/confiance annoncées…) et mémorise les **paramètres influents** — **sans jamais modifier la stratégie**. Ces leçons servent uniquement à rendre ses calculs de **probabilité et de confiance de plus en plus justes**, jour après jour. Les leçons du jour sont visibles dans **Historique → Statistiques** (carte « Auto-calibrage IA »), et tu peux forcer une revue à tout moment.
+
+---
+
 ## ⚠️ Avertissement
 
-Ghost rskIA est une **aide à la décision** qui réplique la méthode d'analyse de Kasper (formation 10h, stratégie Flux/Zone/Signal + SMC). Ce n'est **pas un conseil financier** ni une garantie de gains. Les options binaires et le trading à effet de levier comportent un risque élevé : tu peux perdre la totalité du capital engagé. Ne trade jamais d'argent dont tu as besoin.
+Ghost rskIA est une **aide à la décision** basée sur une stratégie Smart Money Concepts (flux → liquidité → zone → signal). Ce n'est **pas un conseil financier** ni une garantie de gains. Les options binaires et le trading à effet de levier comportent un risque élevé : tu peux perdre la totalité du capital engagé. Ne trade jamais d'argent dont tu as besoin.
 
 ---
 *Ghost rskIA — deviens le sniper, pas la cible.* 👻

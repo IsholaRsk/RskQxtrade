@@ -1,15 +1,15 @@
 # 👻 Ghost rskIA
 
-**Analyse tes captures de graphiques et reçois un plan de trade complet** — direction, entrée (marché ou "si le prix atteint X"), TP, SL, probabilité de réussite, confiance et explication — calqué sur la méthode de scalping SMC de **Kasper**.
+**Analyse tes captures de graphiques et reçois un plan de trade complet** — direction, entrée (marché ou « si le prix atteint X »), TP, SL, probabilité de réussite, confiance et explication simple — grâce à une stratégie de scalping **Smart Money (SMC)** éprouvée.
 
 ![Demo](assets/demo-chart.png)
 
 ## ✨ Fonctionnalités
 
 - 📸 **Une capture suffit** : colle (`Ctrl+V`), glisse-dépose ou importe ta capture Pocket Option / MT5
-- 🧠 **Méthode Kasper (SMC) intégrée** issue de sa formation 10h :
+- 🧠 **Stratégie Smart Money (SMC) intégrée — 4 filtres + 1 plan** :
   - **FLUX** — structure Dow (HH/HL, LH/LL), CHoCH, moyenne mobile 200, RSI
-  - **LIQUIDITÉ** — equal highs/lows, range asiatique (1h-6h) : *"la liquidité l'emporte toujours"*
+  - **LIQUIDITÉ** — equal highs/lows, range asiatique (1h-6h) : *« la liquidité l'emporte toujours »*
   - **ZONE ★** — order block + imbalance (éliminatoire), BPR, FVG, breaker block, OTE Fibonacci 0.62-0.786
   - **SIGNAL** — englobante > pinbar > étoile du matin, volume en renfort
   - **Notation du setup en étoiles (1-5)** avec probabilité calibrée
@@ -18,10 +18,13 @@
 - 📖 **Guide intégré** : meilleures heures de trade, indicateurs à afficher, gestion du risque
 - 🕘 **Historique** des 20 dernières analyses (stockées en local)
 - 🎨 Interface noire glassmorphism bleu/cyan/vert, navigation mobile en bas d'écran
-- 📊 **Tracker de résultats (journal Kasper)** : marque chaque trade WIN/LOSS → winrate global, par étoiles (★3/★4/★5), par direction, par actif, profit factor, P&L en R et série en cours
+- 📊 **Tracker de résultats (journal intégré)** : marque chaque trade WIN/LOSS → winrate global, par étoiles (★3/★4/★5), par direction, par actif, profit factor, P&L en R et série en cours
 - 🥇 **Multi-captures** : analyse M1/M5 (exécution) **+** M15/H1 (contexte) ensemble — confluence multi-timeframes, étoiles renforcées
 - 📰 **Filtre news en direct** : calendrier économique réel vérifié à chaque upload — bannière verte/ambre/rouge, et l'IA force ATTENDRE si une annonce 4-5★ tombe dans la fenêtre interdite
-- 📲 **Bot Telegram** : envoie ta capture au bot → même analyse Kasper directement dans Telegram (`api/telegram.py`, webhook serverless)
+- 📲 **Bot Telegram** : envoie ta capture au bot → la même analyse, directement dans Telegram (`api/telegram.py`, webhook serverless)
+- 📱 **Mini App Telegram + PWA** : l'app complète s'ouvre depuis le bouton ☰ du bot, et s'ajoute à ton écran d'accueil comme une vraie app (manifest + icône)
+- 🧠 **Auto-calibrage quotidien (minuit)** : chaque jour l'IA passe en revue les pertes du journal, identifie le paramètre influent de chaque perte et le garde en tête pour affiner ses calculs de probabilité/confiance — **la stratégie n'est jamais modifiée**
+- 🎯 **Actifs optimisés** : Or (XAU/USD), SPX500, Nasdaq, EUR/USD, GBP/USD, paires JPY/AUD/NZD — pénalité de probabilité automatique sur les autres actifs
 - 🔑 **Bring your own key** : fonctionne avec *ta* clé API (Gemini **gratuit**, OpenAI, OpenRouter, Groq, ou endpoint compatible)
 
 ## 🚀 Utilisation
@@ -52,7 +55,7 @@ Voir **[GUIDE.md](GUIDE.md)** — les meilleures heures de session (Londres 8h-1
 | `key.example.js` | Modèle de pré-configuration de la clé API |
 | `assets/` | Images de démo |
 | `api/news.py` | Endpoint calendrier économique (Vercel serverless, CORS ouvert) |
-| `api/telegram.py` | Bot Telegram (webhook serverless, même cerveau Kasper) |
+| `api/telegram.py` | Bot Telegram (webhook serverless, même moteur d'analyse) |
 
 ## ☑️ Checklist avant chaque trade
 
@@ -66,7 +69,3 @@ Voir **[GUIDE.md](GUIDE.md)** — les meilleures heures de session (Londres 8h-1
 ## ⚠️ Avertissement
 
 Cet outil est une **aide à la décision**, pas un conseil financier. Aucune analyse — humaine ou IA — ne garantit un résultat. Les options binaires et le trading à effet de levier comportent un risque élevé de perte totale du capital. Teste d'abord en compte démo.
-
----
-
-*Méthode d'analyse inspirée de la formation publique de Kasper (méthode Flux/Zone/Signal + concepts SMC). Projet indépendant, non affilié.*
