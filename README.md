@@ -22,11 +22,11 @@
 
 ## 🚀 Utilisation
 
-### Option 1 — Direct
-Ouvre `index.html` dans ton navigateur. C'est une app 100 % autonome (aucun build, aucune dépendance).
+### Option 1 — En ligne (recommandé) 🚀
+**[ghost-rskia.vercel.app](https://ghost-rskia.vercel.app)** — déployé sur Vercel, disponible partout. Sur mobile : *Ajouter à l'écran d'accueil* = vraie app.
 
-### Option 2 — Hébergée (GitHub Pages)
-`https://<ton-compte>.github.io/RskQxtrade/` — ajoute-la à ton écran d'accueil mobile : ça devient une vraie app.
+### Option 2 — Fichier local
+Ouvre `index.html` dans ton navigateur. App 100 % autonome (aucun build, aucune dépendance).
 
 ### Configurer ta clé API (2 min, gratuit)
 1. Va sur **[aistudio.google.com](https://aistudio.google.com)** → *Get API key* → *Create API key* (aucune carte bancaire)
