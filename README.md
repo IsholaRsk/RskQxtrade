@@ -22,6 +22,7 @@
 - 🥇 **Multi-captures** : analyse M1/M5 (exécution) **+** M15/H1 (contexte) ensemble — confluence multi-timeframes, étoiles renforcées
 - 📰 **Filtre news en direct** : calendrier économique réel vérifié à chaque upload — bannière verte/ambre/rouge, et l'IA force ATTENDRE si une annonce 4-5★ tombe dans la fenêtre interdite
 - 📲 **Bot Telegram** : envoie ta capture au bot → la même analyse, directement dans Telegram (`api/telegram.py`, webhook serverless)
+- 🤖 **AUTOBOT 100 % cloud** : trade ton compte **MT5 classique (n'importe quel broker, y compris Pocket Option MT5)** tout seul — MetaAPI + cron gratuit, risque 1 %, ≥3★, R:R ≥ 1:2, breakeven +1R, stop 2 pertes/jour, créneau 15h30-17h30 uniquement, DRY-RUN sûr par défaut → voir **[AUTOBOT_SETUP.md](AUTOBOT_SETUP.md)**
 - 📱 **Mini App Telegram + PWA** : l'app complète s'ouvre depuis le bouton ☰ du bot, et s'ajoute à ton écran d'accueil comme une vraie app (manifest + icône)
 - 🧠 **Auto-calibrage quotidien (minuit)** : chaque jour l'IA passe en revue les pertes du journal, identifie le paramètre influent de chaque perte et le garde en tête pour affiner ses calculs de probabilité/confiance — **la stratégie n'est jamais modifiée**
 - 🎯 **Actifs optimisés** : Or (XAU/USD), SPX500, Nasdaq, EUR/USD, GBP/USD, paires JPY/AUD/NZD — pénalité de probabilité automatique sur les autres actifs
