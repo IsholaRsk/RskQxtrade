@@ -2,6 +2,7 @@
   "functions": {
     "api/news.py": { "maxDuration": 30 },
     "api/telegram.py": { "maxDuration": 60 },
-    "api/autobot.py": { "maxDuration": 60 }
+    "api/autobot.py": { "maxDuration": 60 },
+    "api/gs.py": { "maxDuration": 30 }
   }
 }
