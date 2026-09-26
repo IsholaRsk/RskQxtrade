@@ -1,19 +1,22 @@
-# 🤖 AUTOBOT Ghost rskIA — Installation (10 min)
+# 🤖 AUTOBOT SNIPER Ghost rskIA — Installation (10 min)
 
 Le bot trade **ton compte MT5 (classique)** tout seul, 100 % dans le cloud — aucun PC allumé requis. Fonctionne avec **n'importe quel broker MT5, y compris le MT5 de Pocket Option**.
+
+**Marchés : XAUUSD · NAS100 · GBPUSD · BTCUSD** (détectés automatiquement sous leur nom exact chez ton broker : GOLD, USTEC, US100…).
 
 ## Architecture (gratuite)
 
 ```
 cron-job.org (ping 1/min, gratuit)
   → https://ghost-rskia.vercel.app/api/autobot
-      ├─ Bougies M5 via MetaAPI (compte MT5 hébergé dans leur cloud)
-      ├─ Graphique rendu côté serveur (MM200 + volume)
-      ├─ Analyse IA (4 filtres SMC + filtre news réel)
-      |    Règles : ≥3★ · R:R ≥ 1:2 · risque 1% · 2 trades/jour max
-      |    stop après 2 pertes/jour · créneau 15h30-17h30 Paris · breakeven à +1R
-      └─ Ordre placé via MetaAPI (marche ou limite, SL/TP inclus)
-État & journal : Upstash Redis (gratuit)
+      ├─ Bougies M5 + M15 des 4 marchés via MetaAPI (compte MT5 hébergé dans leur cloud)
+      ├─ Graphiques rendus côté serveur (MM200 + volume), analyses en parallèle
+      ├─ Analyse IA SNIPER : sweep liquidité → CHoCH/BOS M5 → OB frais + FVG
+      |    Règles : ≥4★ · flux M15 aligné · R:R ≥ 1:2 · risque 1%
+      |    4 trades/jour max · 2 simultanés max · stop après 2 pertes
+      |    killzone New York 14h-20h Paris · filtre news réel
+      └─ Ordres placés via MetaAPI (SL/TP inclus, breakeven à +1R)
+État & journal : Upstash Redis (gratuit) — positions gérées même hors killzone
 ```
 
 ---
@@ -64,16 +67,17 @@ Ouvre : `https://ghost-rskia.vercel.app/api/autobot`
 
 ## 🛡️ Sécurité intégrée (non négociable)
 
-- **Mode DRY-RUN par défaut** : le bot journalise chaque signal qu'il *aurait* tradé, sans toucher au compte
-- **Règles de risque en dur** : 1 %/trade · ≥3★ · R:R ≥ 1:2 · max 2 trades/jour · stop après 2 pertes/jour · aucun trade hors 15h30-17h30 · aucun trade autour d'une news majeure · **1 seule position à la fois**
-- **Breakeven à +1R** automatique
+- **Mode DRY-RUN par défaut** : le bot journalise chaque signal qu'il *aurait* tradé (avec TP/SL virtuels suivis 90 min), sans toucher au compte
+- **Règles de risque en dur** : 1 %/trade · **≥4★ sniper** (sweep + CHoCH/BOS + OB+imbalance + flux M15) · R:R ≥ 1:2 · max 4 trades/jour · **2 positions simultanées max (1 par marché)** · stop après 2 pertes/jour · analyses uniquement en killzone New York (14h-20h Paris) · aucun trade autour d'une news USD/GBP majeure
+- **Cooldown anti-revanche** : 15 min après clôture, 30 min après une perte, par marché
+- **Breakeven à +1R** automatique, positions gérées même hors killzone
 - Passage en réel (`TRADING_ENABLED=true`) uniquement après 2 semaines de DRY-RUN/démo avec profit factor ≥ 1,3
 - ⚠️ Le trading automatisé peut perdre de l'argent. N'active le réel qu'avec de l'argent que tu peux perdre.
 
 ## 🔧 Options (env)
 
-`SYMBOL` (défaut `XAUUSD`) · `RISK_PCT` (1.0) · `MIN_STARS` (3) · `MIN_RR` (2.0) · `MAX_TRADES_DAY` (2) · `MAX_LOSSES_DAY` (2)
+`SYMBOLS` (défaut `XAUUSD,NAS100,GBPUSD,BTCUSD`) · `RISK_PCT` (1.0) · `MIN_STARS` (4) · `MIN_RR` (2.0) · `MAX_TRADES_DAY` (4) · `MAX_LOSSES_DAY` (2) · `MAX_SIMULT` (2) · `SESSION_START` (`14:00`) · `SESSION_END` (`20:00`, heure de Paris)
 
-Pour trader EUR/USD et l'or : déploie la même fonction sur un 2ᵉ projet, ou change `SYMBOL` (un symbole par instance).
+Pour un autre créneau : modifie `SESSION_START`/`SESSION_END`. Les noms de symboles sont résolus automatiquement (XAUUSD→GOLD, NAS100→USTEC/US100…).
 
 *En cas d'erreur MetaAPI, le journal (`GET /api/autobot`) montre l'erreur exacte — envoie-la-moi.*
